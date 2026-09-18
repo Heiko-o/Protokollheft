@@ -669,7 +669,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 (function(){
@@ -736,14 +735,23 @@
     appId: "1:115809317720:web:42eea3136cb65c4a626b2d",
   };
   const hasFirebase = !!(window.firebase && typeof window.firebase.initializeApp === 'function');
-  let fbDb = null, fbStorage = null;
+  let fbDb = null;
   if(hasFirebase){
     try{
       firebase.initializeApp(firebaseConfig);
       fbDb = firebase.firestore();
-      fbStorage = firebase.storage();
     }catch(e){ /* fällt auf lokalen Demo-Modus zurück */ }
   }
+
+  /* ============ Cloudinary (Foto-/Datei-Speicher, ohne Bezahlkonto) ============ */
+  // Firebase Storage verlangt inzwischen ein hinterlegtes Zahlungskonto (Blaze-Tarif),
+  // auch wenn es innerhalb des Gratis-Kontingents nichts kostet. Damit dafür keine
+  // Kreditkarte nötig ist, läuft der Datei-Upload stattdessen über Cloudinary
+  // (kostenloses Konto, kein Zahlungskonto erforderlich) — Firestore bleibt für die
+  // Protokolltexte selbst unverändert bei Firebase.
+  const CLOUDINARY_CLOUD_NAME = "dari8tnh";
+  const CLOUDINARY_UPLOAD_PRESET = "Protokollheft";
+  const cloudinaryConfigured = CLOUDINARY_CLOUD_NAME !== "DEIN_CLOUD_NAME" && CLOUDINARY_UPLOAD_PRESET !== "DEIN_UPLOAD_PRESET";
 
   /* ============ storage layer: echte Firebase-Cloud, oder ein lokaler Demo-Fallback ============ */
   const store = { mode: 'demo' };
@@ -913,21 +921,29 @@
 
   async function uploadFile(file, attempt){
     attempt = attempt || 1;
-    if(store.mode === 'real' && fbStorage){
-      const path = 'uploads/' + uid() + '-' + (file.name || 'datei').replace(/[^a-zA-Z0-9._-]+/g, '_');
+    if(cloudinaryConfigured){
       try{
-        const ref = fbStorage.ref().child(path);
-        await withTimeout(ref.put(file), 45000, 'timeout');
-        const url = await withTimeout(ref.getDownloadURL(), 20000, 'timeout');
-        // die Firebase-Storage-URL selbst dient als id — so lässt sie sich später
-        // überall (auch auf einem anderen Gerät) synchron aus dem Protokoll auflösen.
-        return { id: url, contentType: file.type || 'application/octet-stream' };
+        const form = new FormData();
+        form.append('file', file);
+        form.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        const isImg = (file.type || '').startsWith('image/');
+        // "auto" erlaubt zusätzlich PDFs/Videos/etc. über denselben Upload-Endpunkt
+        const resourceType = isImg ? 'image' : 'auto';
+        const endpoint = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`;
+        const res = await withTimeout(fetch(endpoint, { method: 'POST', body: form }), 45000, 'timeout');
+        if(!res.ok){
+          throw Object.assign(new Error('upload_failed'), { code: res.status === 429 ? 'rate_limited' : 'upload_failed' });
+        }
+        const data = await res.json();
+        // die Cloudinary-URL selbst dient als id — so lässt sie sich später überall
+        // (auch auf einem anderen Gerät) synchron aus dem Protokoll auflösen.
+        return { id: data.secure_url, contentType: file.type || 'application/octet-stream' };
       }catch(e){
         if(attempt < 3){
           await new Promise(r => setTimeout(r, 1000 * attempt));
           return uploadFile(file, attempt + 1);
         }
-        throw Object.assign(new Error('upload_failed'), { code: 'upload_failed' });
+        throw Object.assign(new Error('upload_failed'), { code: (e && e.code) || 'upload_failed' });
       }
     }
     // Demo-Fallback ohne Cloud: lokale Objekt-URL, nur in diesem Tab gültig
@@ -937,8 +953,8 @@
   }
 
   function resolveFileUrl(id){
-    if(store.mode === 'real'){ return id; } // id ist bereits die volle Storage-URL
-    return demo.photoUrls.get(id) || "";
+    if(cloudinaryConfigured){ return id; } // id ist bereits die volle Cloudinary-URL
+    return demo.photoUrls.get(id) || id || "";
   }
 
   /* ============ Datei-Download (normaler Browser-Download, kein Sandbox-Umweg) ============ */
