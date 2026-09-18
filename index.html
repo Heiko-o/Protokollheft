@@ -1,4 +1,11 @@
 <title>Protokollheft</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#E1590A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Protokollheft">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -1537,16 +1544,17 @@
     $('btnMic').title = 'Spracherkennung wird von diesem Browser nicht unterstützt.';
   }
 
-  function startRecording(){
-    if(!SR) return;
-    recognition = new SR();
-    recognition.lang = 'de-DE';
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    baseTextBeforeRecording = $('fText').value;
-    if(baseTextBeforeRecording && !/\s$/.test(baseTextBeforeRecording)) baseTextBeforeRecording += ' ';
-
-    recognition.onresult = (event) => {
+  // Auf Android wiederholt eine nach einer Pause automatisch neu gestartete
+  // SpeechRecognition-Instanz manchmal bereits erkannten Text (Browser-Eigenart).
+  // Fix: bei jedem Neustart eine komplett NEUE Instanz anlegen statt dieselbe
+  // wiederzuverwenden — der schon erkannte Text steckt sicher in
+  // baseTextBeforeRecording und geht dabei nicht verloren.
+  function createRecognition(){
+    const r = new SR();
+    r.lang = 'de-DE';
+    r.continuous = true;
+    r.interimResults = true;
+    r.onresult = (event) => {
       let finalChunk = '';
       let interim = '';
       for(let i = event.resultIndex; i < event.results.length; i++){
@@ -1561,7 +1569,7 @@
       }
       $('micInterim').textContent = interim;
     };
-    recognition.onerror = (e) => {
+    r.onerror = (e) => {
       stopRecording();
       const msgs = {
         'not-allowed': 'Mikrofonzugriff wurde nicht erlaubt. Bitte in den Website-Einstellungen des Browsers (Symbol neben der Adresszeile) den Mikrofon-Zugriff für diese Seite erlauben und erneut versuchen.',
@@ -1570,11 +1578,20 @@
       };
       toast(msgs[e.error] || 'Spracherkennung wurde unterbrochen.');
     };
-    recognition.onend = () => {
+    r.onend = () => {
       if(recognizing){
+        recognition = createRecognition();
         try{ recognition.start(); }catch(e){ stopRecording(); }
       }
     };
+    return r;
+  }
+
+  function startRecording(){
+    if(!SR) return;
+    baseTextBeforeRecording = $('fText').value;
+    if(baseTextBeforeRecording && !/\s$/.test(baseTextBeforeRecording)) baseTextBeforeRecording += ' ';
+    recognition = createRecognition();
     try{
       recognition.start();
       recognizing = true;
