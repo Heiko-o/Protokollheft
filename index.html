@@ -474,6 +474,10 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn btn-ghost" id="btnTheme" title="Hell/Dunkel umschalten">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        <span id="themeLabel">Hell</span>
+      </button>
       <button class="btn btn-ghost" id="btnExport" title="Aktuelle Auswahl als Text exportieren">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
         Export
@@ -673,6 +677,22 @@
 <script>
 (function(){
   "use strict";
+
+  /* ============ Hell/Dunkel: manuelle Wahl übersteuert die Handy-Einstellung ============ */
+  const THEME_KEY = 'protokollheft-theme';
+  function applyTheme(theme){
+    if(theme === 'light' || theme === 'dark'){
+      document.documentElement.setAttribute('data-theme', theme);
+    } else {
+      document.documentElement.removeAttribute('data-theme'); // folgt der Geräte-Einstellung
+    }
+  }
+  function currentSystemPrefersDark(){
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  let savedTheme = null;
+  try{ savedTheme = localStorage.getItem(THEME_KEY); }catch(e){ /* z. B. privater Modus */ }
+  applyTheme(savedTheme);
 
   /* ============ utilities ============ */
   const $ = (id) => document.getElementById(id);
@@ -1820,6 +1840,25 @@
 
   $('btnSave').addEventListener('click', () => doSave());
   $('btnSaveAsIs').hidden = true;
+
+  /* ============ Hell/Dunkel-Umschalter im Kopfbereich ============ */
+  function effectiveTheme(){
+    const forced = document.documentElement.getAttribute('data-theme');
+    if(forced === 'light' || forced === 'dark') return forced;
+    return currentSystemPrefersDark() ? 'dark' : 'light';
+  }
+  function updateThemeButton(){
+    const isDark = effectiveTheme() === 'dark';
+    $('themeLabel').textContent = isDark ? 'Dunkel' : 'Hell';
+    $('btnTheme').title = isDark ? 'Auf hellen Hintergrund umschalten' : 'Auf dunklen Hintergrund umschalten';
+  }
+  $('btnTheme').addEventListener('click', () => {
+    const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){ /* z. B. privater Modus */ }
+    updateThemeButton();
+  });
+  updateThemeButton();
 
   /* ============ export ============ */
   $('btnExport').addEventListener('click', () => {
