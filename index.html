@@ -1554,23 +1554,25 @@
     r.lang = 'de-DE';
     r.continuous = true;
     r.interimResults = true;
-    // Auf manchen Android-Geräten liefert die Spracherkennung bei jedem Ereignis
-    // erneut ALLE bisherigen "endgültigen" Ergebnisse dieser Aufnahme (statt nur
-    // das neue Stück), sodass ein reines Aneinanderhängen den Text immer weiter
-    // aufbläht und wiederholt. Robuster Fix: den gesamten "endgültigen" Text
-    // dieser einzelnen Aufnahme-Instanz bei jedem Ereignis neu aus event.results
-    // zusammensetzen (ersetzen statt anhängen) und erst beim Beenden der Instanz
+    // Auf manchen Android-Geräten liefert die Spracherkennung mehrere "endgültige"
+    // Ergebnis-Einträge, die JEWEILS bereits die ganze bisher erkannte Wachstums-
+    // Momentaufnahme des Satzes enthalten (nicht nur das neue Wort) — ältere
+    // Einträge werden dabei nicht entfernt. Ein Aneinanderhängen ALLER endgültigen
+    // Einträge (wie beim einfachen Aufsummieren) potenziert die Wiederholung dann
+    // regelrecht. Robuster Fix: nur den LETZTEN endgültigen Eintrag verwenden
+    // (er ist die aktuellste, vollständigste Momentaufnahme dieser Aufnahme-
+    // Instanz) statt alle zusammenzuzählen, und erst beim Beenden der Instanz
     // einmalig an den Text aus vorherigen Instanzen anhängen.
     let sessionFinalText = '';
     r.onresult = (event) => {
-      let finalText = '';
+      let lastFinal = null;
       let interim = '';
       for(let i = 0; i < event.results.length; i++){
         const res = event.results[i];
-        if(res.isFinal) finalText += res[0].transcript;
+        if(res.isFinal) lastFinal = res[0].transcript;
         else interim += res[0].transcript;
       }
-      sessionFinalText = finalText;
+      if(lastFinal !== null) sessionFinalText = lastFinal;
       $('fText').value = baseTextBeforeRecording + sessionFinalText;
       updateFormatPreview();
       $('micInterim').textContent = interim;
