@@ -1554,19 +1554,25 @@
     r.lang = 'de-DE';
     r.continuous = true;
     r.interimResults = true;
+    // Auf manchen Android-Geräten liefert die Spracherkennung bei jedem Ereignis
+    // erneut ALLE bisherigen "endgültigen" Ergebnisse dieser Aufnahme (statt nur
+    // das neue Stück), sodass ein reines Aneinanderhängen den Text immer weiter
+    // aufbläht und wiederholt. Robuster Fix: den gesamten "endgültigen" Text
+    // dieser einzelnen Aufnahme-Instanz bei jedem Ereignis neu aus event.results
+    // zusammensetzen (ersetzen statt anhängen) und erst beim Beenden der Instanz
+    // einmalig an den Text aus vorherigen Instanzen anhängen.
+    let sessionFinalText = '';
     r.onresult = (event) => {
-      let finalChunk = '';
+      let finalText = '';
       let interim = '';
-      for(let i = event.resultIndex; i < event.results.length; i++){
+      for(let i = 0; i < event.results.length; i++){
         const res = event.results[i];
-        if(res.isFinal) finalChunk += res[0].transcript;
+        if(res.isFinal) finalText += res[0].transcript;
         else interim += res[0].transcript;
       }
-      if(finalChunk){
-        baseTextBeforeRecording += finalChunk.trim() + ' ';
-        $('fText').value = baseTextBeforeRecording;
-        updateFormatPreview();
-      }
+      sessionFinalText = finalText;
+      $('fText').value = baseTextBeforeRecording + sessionFinalText;
+      updateFormatPreview();
       $('micInterim').textContent = interim;
     };
     r.onerror = (e) => {
@@ -1579,6 +1585,10 @@
       toast(msgs[e.error] || 'Spracherkennung wurde unterbrochen.');
     };
     r.onend = () => {
+      if(sessionFinalText){
+        baseTextBeforeRecording += sessionFinalText.trim() + ' ';
+        sessionFinalText = '';
+      }
       if(recognizing){
         recognition = createRecognition();
         try{ recognition.start(); }catch(e){ stopRecording(); }
