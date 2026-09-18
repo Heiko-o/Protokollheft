@@ -1,0 +1,1837 @@
+<title>Protokollheft</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F3EC;
+    --surface:#FFFFFF;
+    --surface-sunken:#EFEAE0;
+    --ink:#25211A;
+    --ink-dim:#6F6656;
+    --ink-faint:#B4AA96;
+    --line:#DED6C4;
+    --accent:#E1590A;
+    --accent-ink:#7A2B04;
+    --accent-soft:#FCE3D2;
+    --good:#2E6B45;
+    --good-soft:#DFEEE3;
+    --warn:#9C6B00;
+    --warn-soft:#F6E8C8;
+    --danger:#B23A2E;
+    --danger-soft:#F7DED9;
+    --focus:#1C6E8C;
+    --hl-bg:#FFE873;
+    --hl-ink:#3B2F00;
+    --btn-bg:#CDEBFA;
+    --btn-bg-hover:#B3E0F7;
+    --btn-border:#7FC4EA;
+    --btn-ink:#000000;
+    --radius-s:6px;
+    --radius-m:10px;
+    --radius-l:16px;
+    --shadow-card:0 1px 2px rgba(37,33,26,0.06), 0 1px 1px rgba(37,33,26,0.04);
+    --shadow-pop:0 12px 32px rgba(37,33,26,0.18), 0 2px 8px rgba(37,33,26,0.10);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181510;
+      --surface:#221E17;
+      --surface-sunken:#2B261D;
+      --ink:#F1ECE0;
+      --ink-dim:#B3A88F;
+      --ink-faint:#6E6552;
+      --line:#3B342700;
+      --line:#3B3427;
+      --accent:#FF7A2E;
+      --accent-ink:#FFD9B8;
+      --accent-soft:#3A2415;
+      --good:#7FD69B;
+      --good-soft:#1E3226;
+      --warn:#E8C468;
+      --warn-soft:#3A2E10;
+      --danger:#F0958A;
+      --danger-soft:#3A2019;
+      --focus:#6FC3E0;
+      --hl-bg:#7A6A12;
+      --hl-ink:#FFF3C4;
+      --btn-bg:#BFE0F5;
+      --btn-bg-hover:#A6D5F0;
+      --btn-border:#5FB2E0;
+      --btn-ink:#000000;
+      --shadow-card:0 1px 2px rgba(0,0,0,0.4);
+      --shadow-pop:0 16px 40px rgba(0,0,0,0.55);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181510;
+    --surface:#221E17;
+    --surface-sunken:#2B261D;
+    --ink:#F1ECE0;
+    --ink-dim:#B3A88F;
+    --ink-faint:#6E6552;
+    --line:#3B3427;
+    --accent:#FF7A2E;
+    --accent-ink:#FFD9B8;
+    --accent-soft:#3A2415;
+    --good:#7FD69B;
+    --good-soft:#1E3226;
+    --warn:#E8C468;
+    --warn-soft:#3A2E10;
+    --danger:#F0958A;
+    --danger-soft:#3A2019;
+    --focus:#6FC3E0;
+    --hl-bg:#7A6A12;
+    --hl-ink:#FFF3C4;
+    --btn-bg:#BFE0F5;
+    --btn-bg-hover:#A6D5F0;
+    --btn-border:#5FB2E0;
+    --btn-ink:#000000;
+    --shadow-card:0 1px 2px rgba(0,0,0,0.4);
+    --shadow-pop:0 16px 40px rgba(0,0,0,0.55);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  [hidden]{ display:none !important; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp{
+    font-family:'Archivo','Segoe UI',system-ui,sans-serif;
+    text-wrap:balance;
+    letter-spacing:-0.01em;
+  }
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+  button{ font-family:inherit; }
+  ::selection{ background:var(--accent-soft); }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding-inline:16px;
+    padding-block:20px 64px;
+  }
+
+  /* ---------- header ---------- */
+  header.top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:44px; height:44px; border-radius:var(--radius-m);
+    background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{ width:24px; height:24px; }
+  .brand h1{ font-size:1.35rem; font-weight:800; margin:0; color:var(--ink); }
+  .brand p{ margin:2px 0 0; font-size:0.85rem; color:var(--ink-dim); }
+  .header-actions{ display:flex; gap:8px; align-items:center; }
+
+  .btn{
+    appearance:none; border:1.5px solid var(--btn-border); background:var(--btn-bg);
+    color:var(--btn-ink); border-radius:var(--radius-s); padding:9px 14px;
+    font-size:0.92rem; font-weight:700; cursor:pointer;
+    display:inline-flex; align-items:center; gap:7px; line-height:1;
+    transition:background .15s, border-color .15s, box-shadow .15s, transform .05s;
+    min-height:40px;
+    box-shadow:var(--shadow-card);
+  }
+  .btn:hover{ background:var(--btn-bg-hover); border-color:var(--accent); box-shadow:0 3px 10px rgba(37,33,26,0.14); }
+  .btn:active{ transform:translateY(1px); }
+  .btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  .btn-primary{ background:var(--btn-bg); border-color:var(--accent); color:var(--btn-ink); box-shadow:0 2px 8px rgba(127,196,234,0.45); }
+  .btn-primary:hover{ background:var(--btn-bg-hover); border-color:var(--accent); box-shadow:0 4px 12px rgba(127,196,234,0.55); }
+  .btn-ghost{ background:var(--btn-bg); border-color:var(--btn-border); box-shadow:none; }
+  .btn-ghost:hover{ background:var(--btn-bg-hover); border-color:var(--accent); }
+  .btn-danger{ color:var(--danger); }
+  .btn:disabled{ opacity:0.45; cursor:not-allowed; box-shadow:none; }
+  .btn svg{ width:16px; height:16px; flex-shrink:0; }
+
+  /* ---------- tabs ---------- */
+  .tabbar{
+    display:flex; align-items:center; gap:8px;
+    overflow-x:auto; padding-bottom:6px; margin-bottom:18px;
+    scrollbar-width:thin;
+  }
+  .tab{
+    flex-shrink:0; border:1.5px solid var(--ink-faint); background:var(--surface);
+    color:var(--ink-dim); padding:8px 14px; border-radius:999px;
+    font-weight:600; font-size:0.88rem; cursor:pointer; white-space:nowrap;
+    display:flex; align-items:center; gap:6px;
+    box-shadow:var(--shadow-card);
+  }
+  .tab:hover{ border-color:var(--accent); }
+  .tab .count{ font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--ink-faint); }
+  .tab.active{ background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(225,89,10,0.32); }
+  .tab.active .count{ color:rgba(255,255,255,0.75); }
+  .tab-add{
+    flex-shrink:0; border:1.5px dashed var(--ink-faint); background:var(--surface);
+    color:var(--ink-dim); padding:8px 12px; border-radius:999px;
+    font-weight:600; font-size:0.88rem; cursor:pointer;
+  }
+  .tab-add:hover{ border-color:var(--accent); color:var(--accent-ink); }
+  .tab-add-row{
+    display:flex; gap:8px; align-items:center; margin:-8px 0 18px;
+  }
+  .tab-add-row input{ flex:1; max-width:240px; }
+  .tab-add-row[hidden]{ display:none; }
+
+  /* ---------- topic manage list ---------- */
+  .topic-manage-list{ list-style:none; margin:0 0 6px; padding:0; display:flex; flex-direction:column; gap:8px; max-height:52vh; overflow:auto; }
+  .topic-manage-item{
+    display:flex; align-items:center; gap:10px; padding:9px 10px;
+    border:1px solid var(--line); border-radius:var(--radius-s); background:var(--surface-sunken);
+  }
+  .topic-manage-item .order-btns{ display:flex; gap:2px; flex-shrink:0; }
+  .icon-btn{ width:32px; height:32px; min-height:32px; padding:0; justify-content:center; flex-shrink:0; background:var(--surface); border:1.5px solid var(--ink-faint); box-shadow:none; }
+  .icon-btn:hover{ border-color:var(--accent); background:var(--surface); }
+  .icon-btn:disabled{ opacity:0.28; cursor:not-allowed; }
+  .icon-btn svg{ width:16px; height:16px; }
+  .topic-manage-item .t-name{ flex:1; font-weight:600; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .topic-manage-item .t-count{ font-family:'IBM Plex Mono',monospace; font-size:0.76rem; color:var(--ink-faint); white-space:nowrap; }
+
+  /* ---------- form fields ---------- */
+  label{ font-size:0.82rem; font-weight:600; color:var(--ink-dim); display:block; margin-bottom:5px; }
+  input[type=text], select, textarea{
+    width:100%; border:1px solid var(--line); background:var(--surface);
+    color:var(--ink); border-radius:var(--radius-s); padding:10px 12px;
+    font-size:0.98rem; font-family:inherit;
+  }
+  input[type=text]:focus, select:focus, textarea:focus{
+    outline:2px solid var(--focus); outline-offset:1px; border-color:transparent;
+  }
+  textarea{ resize:vertical; min-height:120px; line-height:1.5; }
+  .field{ margin-bottom:16px; }
+  .field-row{ display:flex; gap:12px; flex-wrap:wrap; }
+  .field-row > .field{ flex:1; min-width:180px; }
+
+  /* ---------- entry launcher + panel ---------- */
+  .launcher{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-l);
+    box-shadow:var(--shadow-card); margin-bottom:24px; overflow:hidden;
+  }
+  .launcher-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:16px 18px; cursor:pointer; user-select:none;
+  }
+  .launcher-head h2{ font-size:1.02rem; margin:0; display:flex; align-items:center; gap:9px; }
+  .launcher-head .chev{ transition:transform .18s; color:var(--ink-faint); }
+  .launcher.open .launcher-head .chev{ transform:rotate(180deg); }
+  .launcher-body{ display:none; padding:0 18px 20px; border-top:1px solid var(--line); }
+  .launcher.open .launcher-body{ display:block; padding-top:16px; }
+
+  .toolrow{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+
+  /* ---------- text format toolbar + marks ---------- */
+  .format-row{ display:flex; gap:6px; margin-bottom:6px; align-items:center; }
+  .fmt-btn{ padding:6px 11px; min-height:32px; font-size:0.82rem; }
+  .fmt-btn.mk{ font-weight:800; background:linear-gradient(transparent 60%, var(--hl-bg) 60%); }
+  .fmt-hint{ font-size:0.76rem; color:var(--ink-dim); }
+  .fmt-preview{ border:1px dashed var(--line); border-radius:8px; padding:8px 10px; margin-top:6px; font-size:0.92rem; color:var(--ink); background:var(--surface); min-height:1.4em; white-space:pre-wrap; }
+  .fmt-preview:empty::before{ content:'Vorschau erscheint hier, sobald Sie Text eingeben.'; color:var(--ink-dim); }
+  .fmt-preview mark{ background:var(--hl-bg); color:var(--hl-ink); padding:0 2px; border-radius:2px; }
+  .fmt-preview-label{ font-size:0.74rem; color:var(--ink-dim); margin-top:4px; }
+  mark{ background:var(--hl-bg); color:var(--hl-ink); border-radius:2px; padding:0 2px; }
+  .card-snippet mark{ padding:0; }
+
+  /* ---------- signature ---------- */
+  .sig-block{ margin:18px 0 4px; padding-top:14px; border-top:1px solid var(--line); }
+  .sig-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
+  .sig-head label{ margin:0; }
+  .sig-pad-wrap{ border:1.5px dashed var(--ink-faint); border-radius:var(--radius-s); background:var(--surface-sunken); touch-action:none; }
+  #sigCanvas{ display:block; width:100%; height:140px; cursor:crosshair; touch-action:none; }
+  .sig-existing{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .sig-existing img{ max-width:220px; max-height:100px; border:1px solid var(--line); border-radius:var(--radius-s); background:var(--surface); }
+  .sig-meta{ font-size:0.82rem; color:var(--ink-dim); }
+  .sig-name-input{ max-width:220px; }
+
+  /* ---------- image + annotation overlay stacking ---------- */
+  .img-stack{ position:relative; display:block; width:100%; height:100%; }
+  .img-stack img{ position:absolute; inset:0; width:100%; height:100%; }
+  .img-stack .base{ position:static; }
+  .img-stack .ann{ object-fit:contain; pointer-events:none; }
+  .photo-thumb .mark-btn{
+    position:absolute; bottom:3px; left:3px; width:22px; height:22px; border-radius:50%;
+    background:rgba(20,17,12,0.7); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:12px; line-height:1;
+  }
+
+  /* ---------- annotation editor ---------- */
+  .annotate-dialog{ max-width:860px; }
+  .annotate-tools{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .ann-tool{ background:var(--surface); }
+  .ann-tool.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .annotate-canvas-wrap{
+    position:relative; width:100%; max-height:65vh; overflow:auto;
+    background:var(--surface-sunken); border:1px solid var(--line); border-radius:var(--radius-s);
+    margin-bottom:14px; display:flex; justify-content:center;
+  }
+  .annotate-canvas-wrap canvas{ display:block; max-width:100%; height:auto; }
+  #annDrawCanvas{ position:absolute; left:50%; transform:translateX(-50%); top:0; touch-action:none; cursor:crosshair; }
+  .ann-text-input{
+    position:absolute; z-index:5; font:800 20px 'Source Sans 3',sans-serif; color:var(--accent-ink);
+    background:#fff; border:2px solid var(--accent); border-radius:4px; padding:2px 6px; min-width:80px;
+  }
+
+  .mic-status{
+    display:none; align-items:center; gap:8px; font-size:0.85rem; color:var(--warn);
+    background:var(--warn-soft); border-radius:var(--radius-s); padding:8px 12px; margin-bottom:12px;
+  }
+  .mic-status.live{ display:flex; }
+  .mic-dot{ width:9px; height:9px; border-radius:50%; background:var(--warn); animation:pulse 1.1s infinite; flex-shrink:0; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  .mic-interim{ font-style:italic; color:var(--ink-dim); }
+
+  .photo-grid{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .photo-thumb{
+    position:relative; width:84px; height:84px; border-radius:var(--radius-s);
+    overflow:hidden; border:1px solid var(--line); background:var(--surface-sunken);
+    flex-shrink:0;
+  }
+  .photo-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .photo-thumb.file{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    padding:6px; text-align:center;
+  }
+  .photo-thumb.file svg{ width:24px; height:24px; color:var(--ink-dim); flex-shrink:0; }
+  .photo-thumb.file .fname{ font-size:0.62rem; line-height:1.15; color:var(--ink-dim); word-break:break-word; max-height:2.3em; overflow:hidden; }
+  .photo-thumb.file .fext{ font-size:0.6rem; font-weight:700; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border-radius:4px; padding:1px 5px; }
+  .photo-thumb .rm{
+    position:absolute; top:3px; right:3px; width:22px; height:22px; border-radius:50%;
+    background:rgba(20,17,12,0.7); color:#fff; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:14px; line-height:1;
+  }
+  .photo-thumb .st{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(20,17,12,0.45); color:#fff; font-size:0.65rem; text-align:center; padding:4px;
+  }
+  .photo-thumb.err{ border-color:var(--danger); }
+
+  .attach-list{ display:flex; flex-direction:column; gap:8px; margin:14px 0; }
+  .attach-row{
+    display:flex; align-items:center; gap:10px; padding:10px 12px;
+    border:1px solid var(--line); border-radius:var(--radius-s); background:var(--surface-sunken);
+  }
+  .attach-row svg{ width:20px; height:20px; color:var(--ink-dim); flex-shrink:0; }
+  .attach-row .a-name{ flex:1; font-weight:600; font-size:0.92rem; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .attach-row .a-ext{ font-size:0.68rem; font-weight:700; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border-radius:4px; padding:2px 6px; flex-shrink:0; }
+
+  input[type=file]{ display:none; }
+
+  .save-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .save-hint{ font-size:0.8rem; color:var(--ink-faint); }
+
+  /* ---------- polish dialog ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,17,12,0.5); display:flex;
+    align-items:center; justify-content:center; padding:20px; z-index:50;
+  }
+  .overlay[hidden]{ display:none; }
+  .dialog{
+    background:var(--surface); border-radius:var(--radius-l); box-shadow:var(--shadow-pop);
+    width:100%; max-width:640px; max-height:88vh; overflow:auto; padding:22px;
+  }
+  .dialog h3{ margin:0 0 4px; font-size:1.1rem; }
+  .dialog .sub{ color:var(--ink-dim); font-size:0.86rem; margin:0 0 16px; }
+  .compare{ display:grid; gap:14px; margin-bottom:18px; }
+  @media (min-width:560px){ .compare{ grid-template-columns:1fr 1fr; } }
+  .compare .col h4{ font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint); margin:0 0 6px; }
+  .compare .col .txt{
+    background:var(--surface-sunken); border-radius:var(--radius-s); padding:12px;
+    font-size:0.92rem; line-height:1.5; white-space:pre-wrap; max-height:260px; overflow:auto;
+  }
+  .compare .col.suggest .txt{ background:var(--accent-soft); }
+  .dialog-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+  .thinking{ display:flex; align-items:center; gap:10px; color:var(--ink-dim); font-size:0.92rem; padding:20px 0; }
+  .spinner{
+    width:16px; height:16px; border-radius:50%; border:2px solid var(--line);
+    border-top-color:var(--accent); animation:spin .7s linear infinite; flex-shrink:0;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- archive ---------- */
+  .archive-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin-bottom:12px; flex-wrap:wrap;
+  }
+  .archive-head h2{ font-size:1.02rem; margin:0; }
+  .search{ position:relative; max-width:280px; flex:1; min-width:180px; }
+  .search svg{ position:absolute; left:10px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--ink-faint); }
+  .search input{ padding-left:32px; }
+
+  .cards{ display:flex; flex-direction:column; gap:10px; }
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m);
+    box-shadow:var(--shadow-card); padding:14px 16px; cursor:pointer;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .card:hover{ border-color:var(--ink-faint); }
+  .card-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .card-name{ font-weight:700; font-size:1rem; margin:0; }
+  .card-date{ font-size:0.78rem; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; white-space:nowrap; }
+  .card-meta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; font-size:0.74rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.03em; color:var(--accent-ink); background:var(--accent-soft);
+    border-radius:999px; padding:3px 10px;
+  }
+  .card-snippet{ font-size:0.9rem; color:var(--ink-dim); margin:0; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .card-foot{ display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--ink-faint); }
+  .card-foot svg{ width:13px; height:13px; }
+  .polished-flag{ color:var(--good); display:inline-flex; align-items:center; gap:4px; }
+
+  .empty{
+    text-align:center; padding:48px 20px; color:var(--ink-dim);
+    border:1px dashed var(--line); border-radius:var(--radius-l);
+  }
+  .empty svg{ width:36px; height:36px; color:var(--ink-faint); margin-bottom:10px; }
+  .empty p{ margin:0 auto; max-width:340px; font-size:0.92rem; }
+
+  /* ---------- detail overlay ---------- */
+  .detail-dialog{ max-width:760px; }
+  .detail-top{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:6px; }
+  .detail-text{ white-space:pre-wrap; line-height:1.6; font-size:0.98rem; }
+  .detail-images{ display:flex; flex-direction:column; gap:14px; margin:16px 0; }
+  .detail-image-fig{ margin:0; }
+  .detail-image{
+    display:block; width:100%; max-height:80vh; object-fit:contain;
+    border-radius:var(--radius-m); border:1px solid var(--line); background:var(--surface-sunken);
+    cursor:zoom-in;
+  }
+  .detail-image-cap{ margin-top:6px; font-size:0.78rem; color:var(--ink-faint); text-align:center; }
+  .detail-actions{ display:flex; gap:8px; margin-top:18px; flex-wrap:wrap; }
+  .confirm-row{ display:flex; align-items:center; gap:10px; background:var(--danger-soft); color:var(--danger); border-radius:var(--radius-s); padding:10px 12px; }
+
+  .toast-wrap{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:80; display:flex; flex-direction:column; gap:8px; align-items:center; }
+  .toast{
+    background:var(--ink); color:var(--bg); padding:10px 18px; border-radius:999px;
+    font-size:0.88rem; font-weight:600; box-shadow:var(--shadow-pop);
+    animation:toastin .18s ease-out;
+  }
+  @keyframes toastin{ from{ opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .lightbox{ position:fixed; inset:0; background:rgba(10,8,5,0.86); z-index:90; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .lightbox[hidden]{ display:none; }
+  .lightbox-stack{ position:relative; max-width:100%; max-height:100%; }
+  .lightbox img{ display:block; max-width:100%; max-height:90vh; border-radius:var(--radius-s); }
+  .lightbox img.ann{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+
+  .sync-note{ display:flex; align-items:center; gap:7px; font-size:0.78rem; color:var(--ink-faint); margin:2px 0 18px; }
+  .sync-note svg{ width:13px; height:13px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
+
+  /* ============ print / "als PDF speichern" (Browser-Druckdialog) ============ */
+  @media print{
+    body *{ visibility:hidden !important; }
+    #detailOverlay, #detailOverlay *{ visibility:visible !important; }
+    #detailOverlay{
+      position:static !important; inset:auto !important; background:none !important;
+      display:block !important; padding:0 !important; z-index:auto !important;
+    }
+    #detailOverlay .dialog{
+      box-shadow:none !important; max-width:100% !important; max-height:none !important;
+      overflow:visible !important; padding:0 !important; width:100% !important;
+    }
+    #btnCloseDetail, .detail-actions, #deleteConfirmRow{ display:none !important; }
+    .detail-image{ max-width:100% !important; max-height:26cm !important; }
+    .img-stack{ break-inside:avoid; }
+    mark{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h13l3 3v13H4z"/><path d="M8 4v6h8V4"/><path d="M8 16h.01"/><path d="M12 16h4"/></svg>
+      </div>
+      <div>
+        <h1>Protokollheft</h1>
+        <p>Marktprotokolle erfassen, ablegen und wiederfinden</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" id="btnExport" title="Aktuelle Auswahl als Text exportieren">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        Export
+      </button>
+    </div>
+  </header>
+
+  <p class="sync-note" id="syncNote">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
+    <span id="syncNoteText">Wird geladen …</span>
+  </p>
+
+  <div class="tabbar" id="tabbar" role="tablist" aria-label="Themen"></div>
+  <div class="tab-add-row" id="tabAddRow" hidden>
+    <input type="text" id="newTopicInput" placeholder="Neues Thema, z. B. „Kassenabschluss“" maxlength="40">
+    <button class="btn btn-primary" id="btnTopicSave">Anlegen</button>
+    <button class="btn btn-ghost" id="btnTopicCancel">Abbrechen</button>
+  </div>
+
+  <section class="launcher" id="launcher">
+    <div class="launcher-head" id="launcherHead">
+      <h2>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        Neues Protokoll
+      </h2>
+      <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="launcher-body">
+      <div class="field-row">
+        <div class="field">
+          <label for="fName">Name des Protokolls</label>
+          <input type="text" id="fName" placeholder="z. B. Team-Besprechung 11.09." maxlength="120">
+        </div>
+        <div class="field" style="max-width:220px;">
+          <label for="fTopic">Thema</label>
+          <select id="fTopic"></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fText">Inhalt</label>
+        <div class="format-row">
+          <button type="button" class="btn fmt-btn" id="btnBold" title="Ausgewählten Text fett schreiben" style="font-weight:800;">F Fett</button>
+          <button type="button" class="btn fmt-btn mk" id="btnMark" title="Ausgewählten Text markieren">Markieren</button>
+        </div>
+        <div class="mic-status" id="micStatus">
+          <span class="mic-dot"></span>
+          <span>Aufnahme läuft — sprechen Sie jetzt.</span>
+          <span class="mic-interim" id="micInterim"></span>
+        </div>
+        <textarea id="fText" placeholder="Text eingeben oder Aufnahme starten …"></textarea>
+        <div class="fmt-preview-label">Vorschau (so sieht es später aus):</div>
+        <div class="fmt-preview" id="fmtPreview"></div>
+      </div>
+
+      <div class="toolrow">
+        <button class="btn" id="btnMic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+          <span id="btnMicLabel">Aufnahme starten</span>
+        </button>
+        <button class="btn" id="btnCamera">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          Foto aufnehmen
+        </button>
+        <button class="btn" id="btnGallery">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Aus Galerie
+        </button>
+        <button class="btn" id="btnFile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          PDF / Datei anhängen
+        </button>
+        <input type="file" id="inputCamera" accept="image/*" capture="environment">
+        <input type="file" id="inputGallery" accept="image/*" multiple>
+        <input type="file" id="inputFile" accept="application/pdf,.pdf,.csv,.md,text/markdown,text/plain,.txt,application/json,.json,video/mp4,video/webm" multiple>
+      </div>
+      <p class="save-hint" style="margin:-8px 0 12px;">Fotos werden als Vorschau angezeigt; PDFs und andere Dateien lassen sich zum Öffnen anhängen.</p>
+
+      <div class="photo-grid" id="photoGrid"></div>
+
+      <div class="sig-block" id="sigBlock">
+        <div class="sig-head">
+          <label style="margin:0;">Unterschrift (optional)</label>
+          <button type="button" class="btn btn-ghost" id="btnSigClear">Löschen</button>
+        </div>
+        <div id="sigExistingWrap" hidden>
+          <div class="sig-existing">
+            <img id="sigExistingImg" alt="Vorhandene Unterschrift">
+            <span class="sig-meta" id="sigExistingMeta"></span>
+            <button type="button" class="btn btn-ghost" id="btnSigReplace">Ersetzen</button>
+          </div>
+        </div>
+        <div id="sigPadWrap">
+          <div class="sig-pad-wrap"><canvas id="sigCanvas"></canvas></div>
+          <div class="field" style="max-width:220px; margin-top:8px; margin-bottom:0;">
+            <input type="text" id="sigName" class="sig-name-input" placeholder="Name (optional)" maxlength="60">
+          </div>
+        </div>
+      </div>
+
+      <div class="save-row">
+        <button class="btn btn-primary" id="btnSave">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+          Speichern
+        </button>
+        <button class="btn btn-ghost" id="btnSaveAsIs" title="Ohne Rechtschreibprüfung direkt speichern">Unverändert speichern</button>
+        <button class="btn btn-ghost" id="btnCancelEdit" hidden>Bearbeitung abbrechen</button>
+        <span class="save-hint" id="saveHint">Text wird vor dem Speichern automatisch auf Rechtschreibung geprüft.</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="archive-head">
+    <h2>Archiv</h2>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="Protokolle durchsuchen …">
+    </div>
+  </div>
+  <div class="cards" id="cards"></div>
+
+</div>
+
+<div class="overlay" id="polishOverlay" hidden>
+  <div class="dialog">
+    <h3 id="polishTitle">Rechtschreibprüfung</h3>
+    <p class="sub" id="polishSub">Der Text wird geprüft und in ein sauberes Protokoll-Deutsch gebracht.</p>
+    <div id="polishThinking" class="thinking"><span class="spinner"></span> Wird geprüft …</div>
+    <div id="polishBody" hidden>
+      <div class="compare">
+        <div class="col"><h4>Original</h4><div class="txt" id="polishOriginal"></div></div>
+        <div class="col suggest"><h4>Vorschlag</h4><div class="txt" id="polishSuggestion"></div></div>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" id="btnKeepOriginal">Original behalten</button>
+        <button class="btn btn-primary" id="btnUseSuggestion">Vorschlag übernehmen &amp; speichern</button>
+      </div>
+    </div>
+    <div id="polishError" hidden>
+      <p class="sub" id="polishErrorText" style="color:var(--danger);"></p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" id="btnPolishErrKeep">Unverändert speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="annotateOverlay" hidden>
+  <div class="dialog annotate-dialog">
+    <h3>Foto markieren</h3>
+    <p class="sub">Mit dem Marker hervorheben, fett beschriften oder unterschreiben/einzeichnen — das Originalfoto bleibt unverändert gespeichert, die Markierung wird als zusätzliche Ebene abgelegt.</p>
+    <div class="annotate-tools">
+      <button type="button" class="btn ann-tool active" id="toolMarker" data-tool="marker">🖍 Markieren</button>
+      <button type="button" class="btn ann-tool" id="toolText" data-tool="text">𝗕 Fett-Text</button>
+      <button type="button" class="btn ann-tool" id="toolPen" data-tool="pen">✒ Stift / Unterschrift</button>
+      <button type="button" class="btn btn-ghost" id="btnAnnUndo">Rückgängig</button>
+      <button type="button" class="btn btn-ghost" id="btnAnnClear">Alles löschen</button>
+    </div>
+    <div class="annotate-canvas-wrap" id="annWrap">
+      <canvas id="annBaseCanvas"></canvas>
+      <canvas id="annDrawCanvas"></canvas>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-ghost" id="btnAnnCancel">Abbrechen</button>
+      <button type="button" class="btn btn-primary" id="btnAnnSave">Übernehmen</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="manageOverlay" hidden>
+  <div class="dialog">
+    <h3>Themen verwalten</h3>
+    <p class="sub">Reihenfolge der Reiter per Pfeil verschieben oder ein Thema löschen.</p>
+    <ul class="topic-manage-list" id="topicManageList"></ul>
+    <div class="dialog-actions">
+      <button class="btn btn-primary" id="btnCloseManage">Fertig</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="detailOverlay" hidden>
+  <div class="dialog detail-dialog" id="detailDialog"></div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden>
+  <div class="lightbox-stack">
+    <img id="lightboxImg" alt="Foto in Originalgröße">
+    <img id="lightboxAnnImg" class="ann" alt="" hidden>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ============ utilities ============ */
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => (s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  // Lightweight inline markup the person applies via the Fett/Markieren buttons:
+  // **fett** and ==markiert==. Kept as plain text in storage (search, export and
+  // spellcheck round-trip stay simple); rendered to real <strong>/<mark> for reading.
+  // Tolerant to accidentally doubled markers (e.g. "====text====" from a double click) –
+  // {2,} matches two or more marker characters so old/duplicated data still renders correctly.
+  const stripMarks = (s) => (s ?? "").replace(/\*{2,}(.+?)\*{2,}/gs, "$1").replace(/={2,}(.+?)={2,}/gs, "$1");
+  const renderMarks = (s) => esc(s ?? "")
+    .replace(/\*{2,}(.+?)\*{2,}/gs, "<strong>$1</strong>")
+    .replace(/={2,}(.+?)={2,}/gs, "<mark>$1</mark>");
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+  const nowIso = () => new Date().toISOString();
+  const fmtDate = (iso) => {
+    try{
+      const d = new Date(iso);
+      return d.toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', year:'2-digit'}) + " · " +
+             d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+    }catch(e){ return ""; }
+  };
+  function toast(msg){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    $('toastWrap').appendChild(el);
+    setTimeout(() => el.remove(), 3200);
+  }
+
+  const DEFAULT_TOPICS = ["Team-Besprechung","Wareneingang","Inventur","Sicherheit & Unfall","Kundenanliegen","Sonstiges"];
+
+  /* ============ Firebase (eigene Cloud-Datenbank, geräteübergreifend) ============ */
+  const firebaseConfig = {
+    apiKey: "AIzaSyCjfSeGY_MZtEvbO9LILfh0IKORhG5ItIk",
+    authDomain: "protokollheft.firebaseapp.com",
+    projectId: "protokollheft",
+    storageBucket: "protokollheft.firebasestorage.app",
+    messagingSenderId: "115809317720",
+    appId: "1:115809317720:web:42eea3136cb65c4a626b2d",
+  };
+  const hasFirebase = !!(window.firebase && typeof window.firebase.initializeApp === 'function');
+  let fbDb = null, fbStorage = null;
+  if(hasFirebase){
+    try{
+      firebase.initializeApp(firebaseConfig);
+      fbDb = firebase.firestore();
+      fbStorage = firebase.storage();
+    }catch(e){ /* fällt auf lokalen Demo-Modus zurück */ }
+  }
+
+  /* ============ storage layer: echte Firebase-Cloud, oder ein lokaler Demo-Fallback ============ */
+  const store = { mode: 'demo' };
+  const demo = {
+    topics: [],
+    protocols: [],
+    photoUrls: new Map(),
+    topicListeners: [],
+    protoListeners: [],
+    notifyTopics(){ sortTopicsArr(this.topics); this.topicListeners.forEach(fn => fn(this.topics.slice())); },
+    notifyProtocols(){ this.protoListeners.forEach(fn => fn(this.protocols.slice())); },
+  };
+
+  function sortTopicsArr(arr){ arr.sort((a,b) => (a.order ?? 0) - (b.order ?? 0)); return arr; }
+
+  function seedDemo(){
+    const now = Date.now();
+    DEFAULT_TOPICS.forEach((name, i) => {
+      demo.topics.push({ id: uid(), name, order:i, createdAt: new Date(now - (DEFAULT_TOPICS.length - i) * 1000).toISOString() });
+    });
+    const t1 = demo.topics[0], t2 = demo.topics[1], t3 = demo.topics[3];
+    demo.protocols.push({
+      id: uid(), name: "[Beispiel] Frühbesprechung Montag",
+      topicId: t1.id, topicName: t1.name,
+      text: "Anwesend: Marktleitung, Teamleiter Garten, Teamleiter Baustoffe.\nThemen: Saisonumbau Grillartikel bis Freitag abgeschlossen, Personalengpass Kasse am Samstag durch Springer aus Baustoffe abgedeckt, Reklamation Rasenmäher Kunde Nr. 4471 wird von Herrn Bauer zurückgerufen.\nNächste Besprechung: kommenden Montag, 7:30 Uhr.",
+      attachments: [], polished:true, createdAt: new Date(now - 3*86400000).toISOString(), updatedAt: new Date(now - 3*86400000).toISOString(),
+    });
+    demo.protocols.push({
+      id: uid(), name: "[Beispiel] Wareneingang Fliesen Palette 12",
+      topicId: t2.id, topicName: t2.name,
+      text: "Lieferung von Fliesenhandel Nord, 4 Paletten, eine Palette mit beschädigter Folie und zwei zerbrochenen Kartons. Schaden fotografisch dokumentiert, Lieferschein mit Vermerk gegengezeichnet, Meldung an Einkauf per E-Mail raus.",
+      attachments: [], polished:true, createdAt: new Date(now - 1*86400000).toISOString(), updatedAt: new Date(now - 1*86400000).toISOString(),
+    });
+    demo.protocols.push({
+      id: uid(), name: "[Beispiel] Beinahe-Unfall Hochregal Gang 14",
+      topicId: t3.id, topicName: t3.name,
+      text: "Gitterbox aus dem Hochregal Gang 14 hat sich beim Kommissionieren leicht verschoben, kein Personenschaden. Regal durch Fachkraft geprüft, Ladungssicherung nachgezogen, Vorfall an Sicherheitsbeauftragten gemeldet.",
+      attachments: [], polished:false, createdAt: new Date(now - 6*3600000).toISOString(), updatedAt: new Date(now - 6*3600000).toISOString(),
+    });
+    demo.notifyTopics(); demo.notifyProtocols();
+  }
+
+  async function initStore(){
+    if(fbDb){
+      store.mode = 'real';
+      $('syncNoteText').textContent = 'Wird geräteübergreifend synchronisiert (eigene Cloud-Datenbank).';
+      // seed defaults on first run
+      try{
+        const snap = await fbDb.collection('topics').limit(1).get();
+        if(snap.empty){
+          for(let i=0;i<DEFAULT_TOPICS.length;i++){ await fbDb.collection('topics').add({ name: DEFAULT_TOPICS[i], order:i, createdAt: nowIso() }); }
+        }
+      }catch(e){ /* non-fatal */ }
+    } else {
+      store.mode = 'demo';
+      $('syncNoteText').textContent = 'Demo-Ansicht ohne Cloud-Speicherung (Cloud-Datenbank gerade nicht erreichbar) — Änderungen bleiben nur lokal in diesem Tab erhalten.';
+      seedDemo();
+    }
+  }
+
+  function subscribeTopics(cb){
+    if(store.mode === 'real'){
+      return fbDb.collection('topics').orderBy('order','asc').onSnapshot(
+        snap => cb(snap.docs.map(d => ({ id:d.id, ...d.data() }))),
+        () => toast('Themen konnten nicht geladen werden.')
+      );
+    }
+    demo.topicListeners.push(cb);
+    cb(sortTopicsArr(demo.topics.slice()));
+    return () => { demo.topicListeners = demo.topicListeners.filter(f => f !== cb); };
+  }
+
+  function subscribeProtocols(cb){
+    if(store.mode === 'real'){
+      return fbDb.collection('protocols').orderBy('createdAt','desc').onSnapshot(
+        snap => cb(snap.docs.map(d => ({ id:d.id, ...d.data() }))),
+        () => toast('Protokolle konnten nicht geladen werden.')
+      );
+    }
+    demo.protoListeners.push(cb);
+    cb(demo.protocols.slice().sort((a,b) => b.createdAt.localeCompare(a.createdAt)));
+    return () => { demo.protoListeners = demo.protoListeners.filter(f => f !== cb); };
+  }
+
+  async function addTopic(name){
+    const order = topics.length ? Math.max(...topics.map(t => t.order ?? 0)) + 1 : 0;
+    if(store.mode === 'real'){
+      await fbDb.collection('topics').add({ name, order, createdAt: nowIso() });
+    } else {
+      demo.topics.push({ id: uid(), name, order, createdAt: nowIso() });
+      demo.notifyTopics();
+    }
+  }
+
+  async function persistTopicOrder(orderedTopics){
+    if(store.mode === 'real'){
+      const batch = fbDb.batch();
+      orderedTopics.forEach((t, i) => batch.update(fbDb.collection('topics').doc(t.id), { order: i }));
+      await batch.commit();
+    } else {
+      orderedTopics.forEach((t, i) => {
+        const ref = demo.topics.find(x => x.id === t.id);
+        if(ref) ref.order = i;
+      });
+      demo.notifyTopics();
+    }
+  }
+
+  async function moveTopic(id, dir){
+    const idx = topics.findIndex(t => t.id === id);
+    const newIdx = idx + dir;
+    if(idx < 0 || newIdx < 0 || newIdx >= topics.length) return;
+    const arr = topics.slice();
+    const [item] = arr.splice(idx, 1);
+    arr.splice(newIdx, 0, item);
+    try{ await persistTopicOrder(arr); }
+    catch(e){ toast('Reihenfolge konnte nicht gespeichert werden.'); }
+  }
+
+  async function deleteTopic(id){
+    if(store.mode === 'real'){
+      await fbDb.collection('topics').doc(id).delete();
+    } else {
+      demo.topics = demo.topics.filter(t => t.id !== id);
+      demo.notifyTopics();
+    }
+    if(activeTopicId === id) activeTopicId = 'all';
+  }
+
+  async function saveProtocol(data, editId){
+    if(store.mode === 'real'){
+      if(editId){ await fbDb.collection('protocols').doc(editId).update(data); }
+      else { await fbDb.collection('protocols').add(data); }
+    } else {
+      if(editId){
+        const p = demo.protocols.find(p => p.id === editId);
+        if(p) Object.assign(p, data);
+      } else {
+        demo.protocols.unshift({ id: uid(), ...data });
+      }
+      demo.notifyProtocols();
+    }
+  }
+
+  async function deleteProtocol(id){
+    if(store.mode === 'real'){
+      await fbDb.collection('protocols').doc(id).delete();
+    } else {
+      demo.protocols = demo.protocols.filter(p => p.id !== id);
+      demo.notifyProtocols();
+    }
+  }
+
+  async function uploadFile(file){
+    if(store.mode === 'real' && fbStorage){
+      const path = 'uploads/' + uid() + '-' + (file.name || 'datei').replace(/[^a-zA-Z0-9._-]+/g, '_');
+      const ref = fbStorage.ref().child(path);
+      await ref.put(file);
+      const url = await ref.getDownloadURL();
+      // die Firebase-Storage-URL selbst dient als id — so lässt sie sich später
+      // überall (auch auf einem anderen Gerät) synchron aus dem Protokoll auflösen.
+      return { id: url, contentType: file.type || 'application/octet-stream' };
+    }
+    // Demo-Fallback ohne Cloud: lokale Objekt-URL, nur in diesem Tab gültig
+    const id = uid();
+    demo.photoUrls.set(id, URL.createObjectURL(file));
+    return { id, contentType: file.type || 'application/octet-stream' };
+  }
+
+  function resolveFileUrl(id){
+    if(store.mode === 'real'){ return id; } // id ist bereits die volle Storage-URL
+    return demo.photoUrls.get(id) || "";
+  }
+
+  /* ============ Datei-Download (normaler Browser-Download, kein Sandbox-Umweg) ============ */
+  function saveBlobAsFile(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+  function saveTextAsFile(text, filename, mime){
+    saveBlobAsFile(new Blob([text], { type: mime || 'text/plain;charset=utf-8' }), filename);
+  }
+
+  /* ============ app state ============ */
+  let topics = [];
+  let protocols = [];
+  let activeTopicId = 'all';
+  let searchTerm = '';
+  let attachmentQueue = []; // { localId, assetId|null, url, name, contentType, status: 'uploading'|'ready'|'error' }
+  const isImageType = (ct) => (ct || '').startsWith('image/');
+  const extOf = (name, ct) => {
+    const m = (name || '').match(/\.([a-z0-9]+)$/i);
+    if(m) return m[1].toUpperCase();
+    if(ct === 'application/pdf') return 'PDF';
+    if(ct) return ct.split('/')[1]?.toUpperCase() || 'DATEI';
+    return 'DATEI';
+  };
+  function fileIconSvg(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2Z"/><path d="M14 2v6h6"/></svg>';
+  }
+  let editingId = null;
+  let pendingSaveContext = null; // for polish dialog
+
+  /* ============ topics / tabs ============ */
+  function renderTabs(){
+    const bar = $('tabbar');
+    const counts = new Map();
+    protocols.forEach(p => counts.set(p.topicId, (counts.get(p.topicId)||0) + 1));
+    let html = `<button class="tab ${activeTopicId==='all'?'active':''}" data-topic="all" role="tab">Alle <span class="count">${protocols.length}</span></button>`;
+    topics.forEach(t => {
+      html += `<button class="tab ${activeTopicId===t.id?'active':''}" data-topic="${t.id}" role="tab">${esc(t.name)} <span class="count">${counts.get(t.id)||0}</span></button>`;
+    });
+    bar.innerHTML = html;
+    bar.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+      activeTopicId = btn.dataset.topic;
+      renderTabs(); renderCards();
+    }));
+    bar.insertAdjacentHTML('beforeend', `<button class="tab-add" id="tabAddBtn">+ Thema</button>`);
+    $('tabAddBtn').addEventListener('click', () => {
+      $('tabAddRow').hidden = false;
+      $('newTopicInput').value = '';
+      $('newTopicInput').focus();
+    });
+    if(topics.length){
+      bar.insertAdjacentHTML('beforeend', `<button class="tab-add" id="tabManageBtn" title="Reihenfolge ändern oder Thema löschen">⚙ Verwalten</button>`);
+      $('tabManageBtn').addEventListener('click', () => {
+        renderManageList();
+        $('manageOverlay').hidden = false;
+      });
+    }
+
+    // keep the entry form's topic select in sync
+    const sel = $('fTopic');
+    const prev = sel.value;
+    sel.innerHTML = topics.map(t => `<option value="${t.id}">${esc(t.name)}</option>`).join('');
+    if(topics.some(t => t.id === prev)) sel.value = prev;
+    else if(activeTopicId !== 'all' && topics.some(t=>t.id===activeTopicId)) sel.value = activeTopicId;
+
+    if(!$('manageOverlay').hidden) renderManageList();
+  }
+
+  function renderManageList(){
+    const list = $('topicManageList');
+    const counts = new Map();
+    protocols.forEach(p => counts.set(p.topicId, (counts.get(p.topicId) || 0) + 1));
+    list.innerHTML = topics.map((t, i) => `
+      <li class="topic-manage-item" data-id="${t.id}">
+        <div class="order-btns">
+          <button class="btn btn-ghost icon-btn" data-act="up" ${i === 0 ? 'disabled' : ''} aria-label="„${esc(t.name)}“ nach oben">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          </button>
+          <button class="btn btn-ghost icon-btn" data-act="down" ${i === topics.length - 1 ? 'disabled' : ''} aria-label="„${esc(t.name)}“ nach unten">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+        <span class="t-name">${esc(t.name)}</span>
+        <span class="t-count">${counts.get(t.id) || 0}</span>
+        <button class="btn btn-ghost icon-btn" data-act="del" aria-label="„${esc(t.name)}“ löschen" title="Thema löschen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="m19 6-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+        </button>
+      </li>
+    `).join('');
+    list.querySelectorAll('[data-act="up"]').forEach(b => b.addEventListener('click', e => moveTopic(e.currentTarget.closest('li').dataset.id, -1)));
+    list.querySelectorAll('[data-act="down"]').forEach(b => b.addEventListener('click', e => moveTopic(e.currentTarget.closest('li').dataset.id, 1)));
+    list.querySelectorAll('[data-act="del"]').forEach(b => b.addEventListener('click', e => askDeleteTopic(e.currentTarget.closest('li'))));
+  }
+
+  function askDeleteTopic(li){
+    const id = li.dataset.id;
+    const t = topics.find(x => x.id === id);
+    if(!t) return;
+    const count = protocols.filter(p => p.topicId === id).length;
+    const warn = count > 0
+      ? ` ${count} Protokoll${count === 1 ? '' : 'e'} behalten das Thema als Text, der Reiter verschwindet aber.`
+      : '';
+    li.innerHTML = `<div class="confirm-row" style="flex:1;">
+      <span>„${esc(t.name)}“ endgültig löschen?${warn}</span>
+      <button class="btn" id="confirmDelTopic" style="background:var(--danger);border-color:var(--danger);color:#fff;">Löschen</button>
+      <button class="btn btn-ghost" id="cancelDelTopic">Abbrechen</button>
+    </div>`;
+    li.querySelector('#confirmDelTopic').addEventListener('click', async () => {
+      await deleteTopic(id);
+      toast('Thema gelöscht.');
+    });
+    li.querySelector('#cancelDelTopic').addEventListener('click', () => renderManageList());
+  }
+
+  $('btnCloseManage').addEventListener('click', () => { $('manageOverlay').hidden = true; });
+  $('manageOverlay').addEventListener('click', e => { if(e.target === $('manageOverlay')) $('manageOverlay').hidden = true; });
+
+  $('btnTopicCancel').addEventListener('click', () => { $('tabAddRow').hidden = true; });
+  $('btnTopicSave').addEventListener('click', async () => {
+    const name = $('newTopicInput').value.trim();
+    if(!name) return;
+    await addTopic(name);
+    $('tabAddRow').hidden = true;
+    toast('Thema angelegt.');
+  });
+  $('newTopicInput').addEventListener('keydown', e => { if(e.key === 'Enter') $('btnTopicSave').click(); });
+
+  /* ============ archive list ============ */
+  function renderCards(){
+    const wrap = $('cards');
+    let list = protocols.slice();
+    if(activeTopicId !== 'all') list = list.filter(p => p.topicId === activeTopicId);
+    if(searchTerm.trim()){
+      const q = searchTerm.trim().toLowerCase();
+      list = list.filter(p => (p.name||'').toLowerCase().includes(q) || (p.text||'').toLowerCase().includes(q));
+    }
+    if(list.length === 0){
+      wrap.innerHTML = `<div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <p>${searchTerm.trim() ? 'Keine Protokolle gefunden.' : 'Noch keine Protokolle in diesem Thema. Leg oben das erste an.'}</p>
+      </div>`;
+      return;
+    }
+    wrap.innerHTML = list.map(p => `
+      <article class="card" data-id="${p.id}">
+        <div class="card-top">
+          <h3 class="card-name">${esc(p.name)}</h3>
+          <span class="card-date">${fmtDate(p.createdAt)}</span>
+        </div>
+        <div class="card-meta">
+          <span class="badge">${esc(p.topicName || '')}</span>
+          ${p.polished ? `<span class="polished-flag"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> geprüft</span>` : ``}
+        </div>
+        <p class="card-snippet">${esc(stripMarks(p.text||'').slice(0,220))}</p>
+        ${(p.attachments && p.attachments.length) ? `<div class="card-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> ${p.attachments.length} Anhang${p.attachments.length>1?'änge':''}</div>` : ``}
+      </article>
+    `).join('');
+    wrap.querySelectorAll('.card').forEach(el => el.addEventListener('click', () => openDetail(el.dataset.id)));
+  }
+
+  $('searchInput').addEventListener('input', e => { searchTerm = e.target.value; renderCards(); });
+
+  /* ============ detail overlay ============ */
+  function openDetail(id){
+    const p = protocols.find(p => p.id === id);
+    if(!p) return;
+    const dlg = $('detailDialog');
+    dlg.innerHTML = `
+      <div class="detail-top">
+        <div>
+          <h3>${esc(p.name)}</h3>
+          <p class="sub">${esc(p.topicName||'')} · ${fmtDate(p.createdAt)}${p.updatedAt && p.updatedAt !== p.createdAt ? ' · bearbeitet ' + fmtDate(p.updatedAt) : ''}</p>
+        </div>
+        <button class="btn btn-ghost" id="btnCloseDetail" aria-label="Schließen">✕</button>
+      </div>
+      <div class="detail-text">${renderMarks(p.text||'')}</div>
+      ${p.signature && p.signature.id ? `<div class="sig-block" style="margin-top:14px;">
+        <div class="sig-existing">
+          <img src="${resolveFileUrl(p.signature.id)}" alt="Unterschrift">
+          <span class="sig-meta">Unterschrieben${p.signature.name ? ' von ' + esc(p.signature.name) : ''}${p.signature.signedAt ? ' am ' + fmtDate(p.signature.signedAt) : ''}</span>
+        </div>
+      </div>` : ``}
+      ${(() => {
+        const atts = p.attachments || [];
+        const images = atts.filter(a => isImageType(a.contentType));
+        const files = atts.filter(a => !isImageType(a.contentType));
+        let html = '';
+        if(images.length){
+          html += `<div class="detail-images">${images.map(a => {
+            const url = resolveFileUrl(a.id);
+            const annUrl = a.annotationId ? resolveFileUrl(a.annotationId) : '';
+            return `<figure class="detail-image-fig">
+              <div class="img-stack" style="aspect-ratio:auto;">
+                <img class="detail-image base" src="${url}" data-full="${url}" data-ann-full="${annUrl}" alt="${esc(a.name || 'Foto zum Protokoll')}">
+                ${annUrl ? `<img class="ann" src="${annUrl}" alt="" style="position:absolute;inset:0;">` : ``}
+              </div>
+              ${a.name ? `<figcaption class="detail-image-cap">${esc(a.name)}${a.annotationId ? ' · markiert' : ''}</figcaption>` : ``}
+            </figure>`;
+          }).join('')}</div>`;
+        }
+        if(files.length){
+          html += `<div class="attach-list">${files.map(a => {
+            const url = resolveFileUrl(a.id);
+            return `<div class="attach-row">${fileIconSvg()}<span class="a-name">${esc(a.name || 'Datei')}</span><span class="a-ext">${esc(extOf(a.name, a.contentType))}</span><a class="btn btn-ghost" href="${url}" target="_blank" rel="noopener">Öffnen</a></div>`;
+          }).join('')}</div>`;
+        }
+        return html;
+      })()}
+      <div class="detail-actions">
+        <button class="btn" id="btnPrintProto" title="Protokoll als PDF-Datei speichern">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+          Als PDF speichern
+        </button>
+        <button class="btn" id="btnEditProto">Bearbeiten</button>
+        <button class="btn btn-danger" id="btnDeleteProto">Löschen</button>
+      </div>
+      <div id="deleteConfirmRow"></div>
+    `;
+    dlg.querySelector('#btnCloseDetail').addEventListener('click', closeDetail);
+    dlg.querySelectorAll('.detail-image').forEach(img => img.addEventListener('click', () => {
+      $('lightboxImg').src = img.dataset.full;
+      if(img.dataset.annFull){
+        $('lightboxAnnImg').src = img.dataset.annFull;
+        $('lightboxAnnImg').hidden = false;
+      } else {
+        $('lightboxAnnImg').hidden = true;
+      }
+      $('lightbox').hidden = false;
+    }));
+    dlg.querySelector('#btnPrintProto').addEventListener('click', () => savePdfForProtocol(p, dlg.querySelector('#btnPrintProto')));
+    dlg.querySelector('#btnEditProto').addEventListener('click', () => { closeDetail(); beginEdit(p); });
+    dlg.querySelector('#btnDeleteProto').addEventListener('click', () => {
+      dlg.querySelector('#deleteConfirmRow').innerHTML = `
+        <div class="confirm-row">
+          <span>Protokoll endgültig löschen?</span>
+          <button class="btn" id="btnConfirmDelete" style="background:var(--danger);border-color:var(--danger);color:#fff;">Löschen</button>
+          <button class="btn btn-ghost" id="btnCancelDelete">Abbrechen</button>
+        </div>`;
+      dlg.querySelector('#btnConfirmDelete').addEventListener('click', async () => {
+        await deleteProtocol(p.id);
+        closeDetail();
+        toast('Protokoll gelöscht.');
+      });
+      dlg.querySelector('#btnCancelDelete').addEventListener('click', () => { dlg.querySelector('#deleteConfirmRow').innerHTML = ''; });
+    });
+    $('detailOverlay').hidden = false;
+  }
+  function closeDetail(){ $('detailOverlay').hidden = true; }
+  $('detailOverlay').addEventListener('click', e => { if(e.target === $('detailOverlay')) closeDetail(); });
+  $('lightbox').addEventListener('click', () => { $('lightbox').hidden = true; });
+
+  function beginEdit(p){
+    editingId = p.id;
+    $('launcher').classList.add('open');
+    $('fName').value = p.name;
+    $('fTopic').value = p.topicId;
+    $('fText').value = p.text || '';
+    updateFormatPreview();
+    attachmentQueue = (p.attachments || []).map(a => ({
+      localId: uid(), assetId: a.id, url: resolveFileUrl(a.id),
+      name: a.name || '', contentType: a.contentType || '', status: 'ready',
+      annotationId: a.annotationId || null,
+      annotationUrl: a.annotationId ? resolveFileUrl(a.annotationId) : null,
+    }));
+    renderAttachmentGrid();
+    loadSignatureIntoForm(p.signature || null);
+    $('btnCancelEdit').hidden = false;
+    $('btnSave').querySelector('svg').nextSibling.textContent = ' Änderungen speichern';
+    $('launcher').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+  function resetForm(){
+    editingId = null;
+    $('fName').value = '';
+    $('fText').value = '';
+    updateFormatPreview();
+    attachmentQueue = [];
+    renderAttachmentGrid();
+    loadSignatureIntoForm(null);
+    $('btnCancelEdit').hidden = true;
+    $('btnSave').lastChild.textContent = ' Speichern';
+  }
+  $('btnCancelEdit').addEventListener('click', resetForm);
+
+  /* ============ launcher open/close ============ */
+  $('launcherHead').addEventListener('click', () => {
+    $('launcher').classList.toggle('open');
+    if($('launcher').classList.contains('open') && $('sigPadWrap') && !$('sigPadWrap').hidden){
+      resizeSignatureCanvas();
+    }
+  });
+
+  /* ============ attachments: photos, PDFs, other files ============ */
+  const UPLOAD_ERROR_COPY = {
+    too_large: 'Datei zu groß',
+    unsupported_type: 'Dateityp nicht unterstützt',
+    quota_or_state: 'Speicher voll',
+    rate_limited: 'Bitte kurz warten',
+  };
+  function renderAttachmentGrid(){
+    const grid = $('photoGrid');
+    grid.innerHTML = attachmentQueue.map(item => {
+      const img = isImageType(item.contentType);
+      return `
+      <div class="photo-thumb ${item.status==='error'?'err':''} ${img?'':'file'}" data-id="${item.localId}">
+        ${img
+          ? `<div class="img-stack"><img class="base" src="${item.url}" alt="">${item.annotationUrl ? `<img class="ann" src="${item.annotationUrl}" alt="">` : ``}</div>`
+          : `${fileIconSvg()}<span class="fname">${esc(item.name || 'Datei')}</span><span class="fext">${esc(extOf(item.name, item.contentType))}</span>`
+        }
+        ${item.status === 'uploading' ? `<div class="st">Lädt hoch …</div>` : ''}
+        ${item.status === 'error' ? `<div class="st">${esc(item.errMsg || 'Fehler')}</div>` : ''}
+        ${img && item.status === 'ready' ? `<button type="button" class="mark-btn" title="Markieren / fett beschriften / unterschreiben" aria-label="Foto markieren">🖍</button>` : ``}
+        <button class="rm" aria-label="Anhang entfernen">✕</button>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('.rm').forEach(btn => btn.addEventListener('click', (e) => {
+      const id = e.target.closest('.photo-thumb').dataset.id;
+      attachmentQueue = attachmentQueue.filter(p => p.localId !== id);
+      renderAttachmentGrid();
+    }));
+    grid.querySelectorAll('.mark-btn').forEach(btn => btn.addEventListener('click', (e) => {
+      const id = e.target.closest('.photo-thumb').dataset.id;
+      openAnnotator(id);
+    }));
+  }
+
+  async function handleFiles(fileList){
+    const files = Array.from(fileList || []);
+    for(const file of files){
+      const localId = uid();
+      const previewUrl = isImageType(file.type) ? URL.createObjectURL(file) : '';
+      attachmentQueue.push({ localId, assetId: null, url: previewUrl, name: file.name, contentType: file.type, status: 'uploading' });
+      renderAttachmentGrid();
+      try{
+        const { id, contentType } = await uploadFile(file);
+        const item = attachmentQueue.find(p => p.localId === localId);
+        if(item){
+          item.assetId = id;
+          item.contentType = contentType || item.contentType;
+          if(!item.url) item.url = resolveFileUrl(id);
+          item.status = 'ready';
+        }
+      }catch(e){
+        const item = attachmentQueue.find(p => p.localId === localId);
+        if(item){ item.status = 'error'; item.errMsg = UPLOAD_ERROR_COPY[e && e.code] || 'Fehler'; }
+      }
+      renderAttachmentGrid();
+    }
+  }
+  $('btnCamera').addEventListener('click', () => $('inputCamera').click());
+  $('btnGallery').addEventListener('click', () => $('inputGallery').click());
+  $('btnFile').addEventListener('click', () => $('inputFile').click());
+  $('inputCamera').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
+  $('inputGallery').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
+  $('inputFile').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
+
+  /* ============ text format toolbar: **fett** / ==markiert== ============ */
+  // Renders a live preview under the textarea so the effect is visible immediately –
+  // the textarea itself can only ever show the raw **/== characters as plain text.
+  function updateFormatPreview(){
+    const el = $('fmtPreview');
+    if(el) el.innerHTML = renderMarks($('fText').value || '');
+  }
+  function wrapSelection(marker){
+    const ta = $('fText');
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    if(start === end){ toast('Bitte zuerst Text im Feld markieren.'); ta.focus(); return; }
+    const val = ta.value;
+    const mLen = marker.length;
+    const selected = val.slice(start, end);
+    let newVal, newStart, newEnd, msg;
+
+    if(selected.length >= mLen * 2 && selected.startsWith(marker) && selected.endsWith(marker)){
+      // Selection already IS a marked span (markers included in selection) -> toggle off.
+      const inner = selected.slice(mLen, selected.length - mLen);
+      newVal = val.slice(0, start) + inner + val.slice(end);
+      newStart = start; newEnd = start + inner.length;
+      msg = marker === '**' ? 'Fett entfernt.' : 'Markierung entfernt.';
+    } else if(val.slice(Math.max(0, start - mLen), start) === marker && val.slice(end, end + mLen) === marker){
+      // Markers sit directly outside the selection (e.g. re-selecting a span that was
+      // already marked) -> remove them instead of stacking a second pair on top.
+      newVal = val.slice(0, start - mLen) + selected + val.slice(end + mLen);
+      newStart = start - mLen; newEnd = newStart + selected.length;
+      msg = marker === '**' ? 'Fett entfernt.' : 'Markierung entfernt.';
+    } else {
+      newVal = val.slice(0, start) + marker + selected + marker + val.slice(end);
+      newStart = start; newEnd = start + mLen * 2 + selected.length;
+      msg = marker === '**' ? 'Fett gesetzt.' : 'Markierung gesetzt.';
+    }
+
+    ta.value = newVal;
+    ta.focus();
+    ta.setSelectionRange(newStart, newEnd);
+    updateFormatPreview();
+    toast(msg);
+  }
+  $('btnBold').addEventListener('click', () => wrapSelection('**'));
+  $('btnMark').addEventListener('click', () => wrapSelection('=='));
+  $('fText').addEventListener('input', updateFormatPreview);
+
+  /* ============ signature pad ============ */
+  let sigCtx = null;
+  let sigDrawing = false;
+  let sigHasStrokes = false;
+  let sigLast = null;
+  let existingSignature = null;
+  let signatureRemoved = false;
+
+  function resizeSignatureCanvas(){
+    const canvas = $('sigCanvas');
+    const rect = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.round((rect.width || 300) * ratio));
+    canvas.height = Math.max(1, Math.round((rect.height || 140) * ratio));
+    sigCtx = canvas.getContext('2d');
+    sigCtx.scale(ratio, ratio);
+    sigCtx.lineCap = 'round';
+    sigCtx.lineJoin = 'round';
+    sigCtx.lineWidth = 2.4;
+    sigCtx.strokeStyle = '#1c1c1c';
+  }
+  function clearSignaturePad(){ resizeSignatureCanvas(); sigHasStrokes = false; }
+  function initSignaturePad(){
+    const canvas = $('sigCanvas');
+    const pos = (e) => { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    canvas.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      if(!sigCtx) resizeSignatureCanvas();
+      canvas.setPointerCapture(e.pointerId);
+      sigDrawing = true;
+      sigLast = pos(e);
+    });
+    canvas.addEventListener('pointermove', e => {
+      if(!sigDrawing) return;
+      e.preventDefault();
+      const p = pos(e);
+      sigCtx.beginPath(); sigCtx.moveTo(sigLast.x, sigLast.y); sigCtx.lineTo(p.x, p.y); sigCtx.stroke();
+      sigLast = p; sigHasStrokes = true;
+    });
+    canvas.addEventListener('pointerup', () => { sigDrawing = false; });
+    canvas.addEventListener('pointercancel', () => { sigDrawing = false; });
+  }
+  function loadSignatureIntoForm(sig){
+    existingSignature = sig || null;
+    signatureRemoved = false;
+    if(existingSignature && existingSignature.id){
+      $('sigExistingImg').src = resolveFileUrl(existingSignature.id);
+      $('sigExistingMeta').textContent = `Unterschrieben${existingSignature.name ? ' von ' + existingSignature.name : ''}${existingSignature.signedAt ? ' am ' + fmtDate(existingSignature.signedAt) : ''}`;
+      $('sigExistingWrap').hidden = false;
+      $('sigPadWrap').hidden = true;
+    } else {
+      $('sigExistingWrap').hidden = true;
+      $('sigPadWrap').hidden = false;
+      clearSignaturePad();
+    }
+    $('sigName').value = (existingSignature && existingSignature.name) || '';
+  }
+  async function buildSignaturePayload(){
+    if(!$('sigPadWrap').hidden && sigHasStrokes){
+      try{
+        const blob = await new Promise(res => $('sigCanvas').toBlob(res, 'image/png'));
+        if(blob){
+          const { id } = await uploadFile(blob);
+          return { id, name: $('sigName').value.trim(), signedAt: nowIso() };
+        }
+      }catch(e){ toast('Unterschrift konnte nicht gespeichert werden.'); }
+    }
+    if(signatureRemoved) return null;
+    return existingSignature || null;
+  }
+  $('btnSigReplace').addEventListener('click', () => {
+    $('sigExistingWrap').hidden = true;
+    $('sigPadWrap').hidden = false;
+    clearSignaturePad();
+  });
+  $('btnSigClear').addEventListener('click', () => {
+    if(!$('sigExistingWrap').hidden){
+      signatureRemoved = true;
+      existingSignature = null;
+      $('sigExistingWrap').hidden = true;
+      $('sigPadWrap').hidden = false;
+      clearSignaturePad();
+      toast('Unterschrift entfernt.');
+    } else {
+      clearSignaturePad();
+    }
+  });
+  initSignaturePad();
+
+  /* ============ photo annotation: marker, fett-text, stift/unterschrift ============ */
+  let currentAnnTool = 'marker';
+  let annTargetLocalId = null;
+  let annActions = [];
+  let annPreloadImg = null;
+  let annDrawing = false;
+
+  function annPos(e){
+    const canvas = $('annDrawCanvas');
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  }
+  function applyAnnAction(ctx, action){
+    if(action.tool === 'text'){
+      const fontPx = action.fontPx || 28;
+      ctx.font = `800 ${fontPx}px 'Source Sans 3', sans-serif`;
+      ctx.lineWidth = Math.max(3, fontPx * 0.16);
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+      ctx.fillStyle = '#E1590A';
+      ctx.textBaseline = 'top';
+      ctx.strokeText(action.text, action.x, action.y);
+      ctx.fillText(action.text, action.x, action.y);
+      return;
+    }
+    if(!action.points || action.points.length < 2) return;
+    ctx.beginPath();
+    ctx.moveTo(action.points[0].x, action.points[0].y);
+    for(let i = 1; i < action.points.length; i++) ctx.lineTo(action.points[i].x, action.points[i].y);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = action.tool === 'marker' ? 'rgba(255,214,10,0.45)' : '#1c1c1c';
+    ctx.lineWidth = action.lineWidth || (action.tool === 'marker' ? 20 : 5);
+    ctx.stroke();
+  }
+  function redrawAnnotations(){
+    const canvas = $('annDrawCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(annPreloadImg) ctx.drawImage(annPreloadImg, 0, 0, canvas.width, canvas.height);
+    annActions.forEach(a => applyAnnAction(ctx, a));
+  }
+  function showAnnTextInput(clientX, clientY, canvasPos){
+    const wrap = $('annWrap');
+    const wrapRect = wrap.getBoundingClientRect();
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'ann-text-input';
+    input.placeholder = 'Text …';
+    input.style.left = Math.max(0, clientX - wrapRect.left + wrap.scrollLeft) + 'px';
+    input.style.top = Math.max(0, clientY - wrapRect.top + wrap.scrollTop) + 'px';
+    wrap.appendChild(input);
+    input.focus();
+    let done = false;
+    function commit(){
+      if(done) return; done = true;
+      const val = input.value.trim();
+      input.remove();
+      if(!val) return;
+      const canvas = $('annDrawCanvas');
+      const fontPx = Math.max(20, Math.round(canvas.width * 0.035));
+      annActions.push({ tool: 'text', x: canvasPos.x, y: canvasPos.y, text: val, fontPx });
+      redrawAnnotations();
+    }
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){ e.preventDefault(); commit(); }
+      if(e.key === 'Escape'){ done = true; input.remove(); }
+    });
+    input.addEventListener('blur', commit);
+  }
+  function openAnnotator(localId){
+    const item = attachmentQueue.find(p => p.localId === localId);
+    if(!item || !item.url) return;
+    annTargetLocalId = localId;
+    annActions = [];
+    annPreloadImg = null;
+    const img = new Image();
+    img.onload = () => {
+      const maxDim = 1600;
+      let w = img.naturalWidth || 800, h = img.naturalHeight || 600;
+      const scale = Math.min(1, maxDim / Math.max(w, h));
+      w = Math.max(1, Math.round(w * scale)); h = Math.max(1, Math.round(h * scale));
+      const baseCanvas = $('annBaseCanvas'), drawCanvas = $('annDrawCanvas');
+      baseCanvas.width = w; baseCanvas.height = h;
+      drawCanvas.width = w; drawCanvas.height = h;
+      baseCanvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      if(item.annotationUrl){
+        const annImg = new Image();
+        annImg.onload = () => { annPreloadImg = annImg; redrawAnnotations(); };
+        annImg.onerror = () => redrawAnnotations();
+        annImg.src = item.annotationUrl;
+      } else {
+        redrawAnnotations();
+      }
+      $('annotateOverlay').hidden = false;
+    };
+    img.onerror = () => toast('Foto konnte nicht geladen werden.');
+    img.src = item.url;
+  }
+  document.querySelectorAll('.ann-tool').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('.ann-tool').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentAnnTool = btn.dataset.tool;
+  }));
+  $('annDrawCanvas').addEventListener('pointerdown', e => {
+    e.preventDefault();
+    if(currentAnnTool === 'text'){ showAnnTextInput(e.clientX, e.clientY, annPos(e)); return; }
+    annDrawing = true;
+    $('annDrawCanvas').setPointerCapture(e.pointerId);
+    const canvas = $('annDrawCanvas');
+    const lineWidth = currentAnnTool === 'marker' ? Math.max(14, canvas.width * 0.018) : Math.max(3, canvas.width * 0.005);
+    annActions.push({ tool: currentAnnTool, points: [annPos(e)], lineWidth });
+  });
+  $('annDrawCanvas').addEventListener('pointermove', e => {
+    if(!annDrawing) return;
+    e.preventDefault();
+    annActions[annActions.length - 1].points.push(annPos(e));
+    redrawAnnotations();
+  });
+  $('annDrawCanvas').addEventListener('pointerup', () => { annDrawing = false; });
+  $('annDrawCanvas').addEventListener('pointercancel', () => { annDrawing = false; });
+  $('btnAnnUndo').addEventListener('click', () => { annActions.pop(); redrawAnnotations(); });
+  $('btnAnnClear').addEventListener('click', () => { annActions = []; annPreloadImg = null; redrawAnnotations(); });
+  $('btnAnnCancel').addEventListener('click', () => { $('annotateOverlay').hidden = true; });
+  $('btnAnnSave').addEventListener('click', async () => {
+    const item = attachmentQueue.find(p => p.localId === annTargetLocalId);
+    if(!item){ $('annotateOverlay').hidden = true; return; }
+    if(annActions.length === 0 && !annPreloadImg){ $('annotateOverlay').hidden = true; return; }
+    $('btnAnnSave').disabled = true;
+    try{
+      const canvas = $('annDrawCanvas');
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      const { id } = await uploadFile(blob);
+      item.annotationId = id;
+      item.annotationUrl = URL.createObjectURL(blob);
+      renderAttachmentGrid();
+      toast('Markierung übernommen — das Originalfoto bleibt unverändert gespeichert.');
+    }catch(e){
+      toast('Markierung konnte nicht gespeichert werden.');
+    }
+    $('btnAnnSave').disabled = false;
+    $('annotateOverlay').hidden = true;
+  });
+
+  /* ============ speech-to-text ============ */
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  let recognizing = false;
+  let baseTextBeforeRecording = '';
+
+  if(!SR){
+    $('btnMic').disabled = true;
+    $('btnMic').title = 'Spracherkennung wird von diesem Browser nicht unterstützt.';
+  }
+
+  function startRecording(){
+    if(!SR) return;
+    recognition = new SR();
+    recognition.lang = 'de-DE';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    baseTextBeforeRecording = $('fText').value;
+    if(baseTextBeforeRecording && !/\s$/.test(baseTextBeforeRecording)) baseTextBeforeRecording += ' ';
+
+    recognition.onresult = (event) => {
+      let finalChunk = '';
+      let interim = '';
+      for(let i = event.resultIndex; i < event.results.length; i++){
+        const res = event.results[i];
+        if(res.isFinal) finalChunk += res[0].transcript;
+        else interim += res[0].transcript;
+      }
+      if(finalChunk){
+        baseTextBeforeRecording += finalChunk.trim() + ' ';
+        $('fText').value = baseTextBeforeRecording;
+        updateFormatPreview();
+      }
+      $('micInterim').textContent = interim;
+    };
+    recognition.onerror = (e) => {
+      stopRecording();
+      const msgs = {
+        'not-allowed': 'Mikrofonzugriff wurde nicht erlaubt. Bitte in den Website-Einstellungen des Browsers (Symbol neben der Adresszeile) den Mikrofon-Zugriff für diese Seite erlauben und erneut versuchen.',
+        'no-speech': 'Keine Sprache erkannt.',
+        'audio-capture': 'Kein Mikrofon gefunden.',
+      };
+      toast(msgs[e.error] || 'Spracherkennung wurde unterbrochen.');
+    };
+    recognition.onend = () => {
+      if(recognizing){
+        try{ recognition.start(); }catch(e){ stopRecording(); }
+      }
+    };
+    try{
+      recognition.start();
+      recognizing = true;
+      $('micStatus').classList.add('live');
+      $('btnMicLabel').textContent = 'Aufnahme stoppen';
+    }catch(e){
+      toast('Aufnahme konnte nicht gestartet werden.');
+    }
+  }
+  function stopRecording(){
+    recognizing = false;
+    if(recognition){ try{ recognition.stop(); }catch(e){} }
+    $('micStatus').classList.remove('live');
+    $('micInterim').textContent = '';
+    $('btnMicLabel').textContent = 'Aufnahme starten';
+  }
+  $('btnMic').addEventListener('click', () => { recognizing ? stopRecording() : startRecording(); });
+
+  /* ============ spelling / polish + save ============ */
+  function buildPolishPrompt(text){
+    const hasMarks = /\*{2,}.+?\*{2,}|={2,}.+?={2,}/s.test(text);
+    const marksNote = hasMarks
+      ? ' Der Text enthält Markierungen der Form **fett** und ==markiert== – diese Sternchen bzw. Gleichheitszeichen exakt an derselben Stelle um dieselben Wörter herum beibehalten, niemals entfernen, hinzufügen oder verschieben.'
+      : '';
+    return `Du bist Lektor für interne Protokolle in einem Baumarkt. Korrigiere ausschließlich Rechtschreibung, Grammatik und Zeichensetzung und formuliere den Text in klarem, sachlichem Protokoll-Deutsch, ohne Informationen hinzuzufügen, zu entfernen oder inhaltlich zu verändern. Behalte Aufzählungen und Zeilenumbrüche sinngemäß bei.${marksNote} Gib ausschließlich den überarbeiteten Text zurück, ohne Anführungszeichen, ohne Einleitung, ohne Kommentar.\n\nText:\n${text}`;
+  }
+
+  async function collectFormData(){
+    const name = $('fName').value.trim();
+    const topicId = $('fTopic').value;
+    const topicName = (topics.find(t => t.id === topicId) || {}).name || '';
+    const text = $('fText').value.trim();
+    const attachments = attachmentQueue
+      .filter(p => p.status === 'ready' && p.assetId)
+      .map(p => {
+        const out = { id: p.assetId, name: p.name || '', contentType: p.contentType || '' };
+        if(p.annotationId) out.annotationId = p.annotationId;
+        return out;
+      });
+    const stillUploading = attachmentQueue.some(p => p.status === 'uploading');
+    const signature = await buildSignaturePayload();
+    return { name, topicId, topicName, text, attachments, stillUploading, signature };
+  }
+
+  async function finalizeSave(text, polished){
+    const { name, topicId, topicName, attachments, signature } = pendingSaveContext;
+    const data = {
+      name, topicId, topicName, text, attachments,
+      signature: signature || null,
+      polished: !!polished,
+      updatedAt: nowIso(),
+    };
+    if(!editingId) data.createdAt = nowIso();
+    try{
+      await saveProtocol(data, editingId);
+      toast(editingId ? 'Protokoll aktualisiert.' : 'Protokoll gespeichert.');
+      resetForm();
+      $('launcher').classList.remove('open');
+    }catch(e){
+      toast('Speichern fehlgeschlagen. Bitte erneut versuchen.');
+    }
+    pendingSaveContext = null;
+  }
+
+  async function doSave(){
+    const data = await collectFormData();
+    if(!data.name){ toast('Bitte einen Namen für das Protokoll eingeben.'); $('fName').focus(); return; }
+    if(!data.topicId){ toast('Bitte ein Thema wählen.'); return; }
+    if(data.stillUploading){ toast('Bitte warten, bis alle Fotos hochgeladen sind.'); return; }
+    if(recognizing) stopRecording();
+    pendingSaveContext = data;
+    await finalizeSave(data.text, false);
+  }
+
+  function openPolishDialog(text){
+    $('polishOverlay').hidden = false;
+    $('polishThinking').hidden = false;
+    $('polishBody').hidden = true;
+    $('polishError').hidden = true;
+    $('polishOriginal').innerHTML = renderMarks(text);
+
+    let ctl = new AbortController();
+    store.sample(buildPolishPrompt(text), {
+      modelTier: 'default',
+      cache: false,
+      signal: ctl.signal,
+      onText: ({ text: partial }) => {
+        $('polishThinking').hidden = true;
+        $('polishBody').hidden = false;
+        $('polishSuggestion').innerHTML = renderMarks(partial);
+      },
+    }).then(({ text: finalText }) => {
+      $('polishThinking').hidden = true;
+      $('polishBody').hidden = false;
+      $('polishSuggestion').innerHTML = renderMarks(finalText);
+      $('btnUseSuggestion').onclick = () => { closePolish(); finalizeSave(finalText, true); };
+      $('btnKeepOriginal').onclick = () => { closePolish(); finalizeSave(text, false); };
+    }).catch((e) => {
+      $('polishThinking').hidden = true;
+      $('polishBody').hidden = true;
+      $('polishError').hidden = false;
+      const copy = {
+        not_granted: 'Rechtschreibprüfung wurde nicht erlaubt.',
+        rate_limited: 'Gerade zu viele Anfragen — bitte kurz warten.',
+        images_unavailable: 'Prüfung derzeit nicht möglich.',
+      };
+      $('polishErrorText').textContent = copy[e.code] || 'Rechtschreibprüfung derzeit nicht möglich.';
+      $('btnPolishErrKeep').onclick = () => { closePolish(); finalizeSave(text, false); };
+    });
+  }
+  function closePolish(){ $('polishOverlay').hidden = true; }
+
+  $('btnSave').addEventListener('click', () => doSave());
+  $('btnSaveAsIs').hidden = true;
+
+  /* ============ export ============ */
+  $('btnExport').addEventListener('click', () => {
+    let list = protocols.slice();
+    if(activeTopicId !== 'all') list = list.filter(p => p.topicId === activeTopicId);
+    if(list.length === 0){ toast('Keine Protokolle zum Exportieren in dieser Ansicht.'); return; }
+    const lines = list.map(p => `# ${p.name}\n${p.topicName} · ${fmtDate(p.createdAt)}\n\n${p.text}\n`).join('\n---\n\n');
+    saveTextAsFile(lines, 'protokolle.txt');
+    toast('Export heruntergeladen.');
+  });
+
+  /* ============ single protocol as PDF ("Als PDF speichern") ============ */
+  // window.print() has no effect inside the published Artifact's sandboxed frame
+  // (no browser print dialog appears), so a PDF is built directly with jsPDF and
+  // handed to the person via the downloads capability instead.
+  function fetchAsDataURL(url){
+    return fetch(url)
+      .then(res => res.blob())
+      .then(blob => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      }))
+      .catch(() => null);
+  }
+
+  async function generateProtocolPdf(p){
+    const jsPDFCtor = window.jspdf && window.jspdf.jsPDF;
+    if(!jsPDFCtor) throw new Error('jsPDF nicht geladen');
+    const doc = new jsPDFCtor({ unit: 'mm', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const marginX = 18, marginTop = 20, marginBottom = 18;
+    const usableW = pageW - marginX * 2;
+    const usableH = pageH - marginTop - marginBottom;
+    let y = marginTop;
+    function ensureSpace(h){
+      if(y + h > pageH - marginBottom){ doc.addPage(); y = marginTop; }
+    }
+
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(30, 25, 20);
+    const nameLines = doc.splitTextToSize(p.name || 'Protokoll', usableW);
+    doc.text(nameLines, marginX, y); y += nameLines.length * 7 + 2;
+
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor(110, 100, 86);
+    const metaLine = `${p.topicName || ''}  ·  ${fmtDate(p.createdAt)}` +
+      (p.updatedAt && p.updatedAt !== p.createdAt ? `  ·  bearbeitet ${fmtDate(p.updatedAt)}` : '');
+    doc.text(metaLine, marginX, y); y += 6;
+    doc.setDrawColor(222, 214, 196); doc.line(marginX, y, pageW - marginX, y); y += 8;
+
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(30, 25, 20);
+    const bodyText = stripMarks(p.text || '').split('\n');
+    bodyText.forEach(paragraph => {
+      const lines = paragraph.length ? doc.splitTextToSize(paragraph, usableW) : [''];
+      lines.forEach(line => {
+        ensureSpace(5.6);
+        doc.text(line, marginX, y);
+        y += 5.6;
+      });
+    });
+    y += 4;
+
+    if(p.signature && p.signature.id){
+      const dataUrl = await fetchAsDataURL(resolveFileUrl(p.signature.id));
+      if(dataUrl){
+        try{
+          const props = doc.getImageProperties(dataUrl);
+          const w = 55, h = w * (props.height / props.width);
+          ensureSpace(h + 10);
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(110, 100, 86);
+          doc.text('Unterschrift' + (p.signature.name ? ' von ' + p.signature.name : '') + (p.signature.signedAt ? ' am ' + fmtDate(p.signature.signedAt) : ''), marginX, y);
+          y += 4;
+          doc.addImage(dataUrl, props.fileType || 'PNG', marginX, y, w, h);
+          y += h + 6;
+        }catch(e){ /* skip unreadable signature image */ }
+      }
+    }
+
+    const atts = p.attachments || [];
+    const images = atts.filter(a => isImageType(a.contentType));
+    const files = atts.filter(a => !isImageType(a.contentType));
+
+    for(const a of images){
+      const baseDataUrl = await fetchAsDataURL(resolveFileUrl(a.id));
+      if(!baseDataUrl) continue;
+      try{
+        const props = doc.getImageProperties(baseDataUrl);
+        let w = usableW, h = w * (props.height / props.width);
+        if(h > usableH){ h = usableH; w = h * (props.width / props.height); }
+        ensureSpace(h + 10);
+        const x = marginX + (usableW - w) / 2;
+        doc.addImage(baseDataUrl, props.fileType || 'JPEG', x, y, w, h);
+        if(a.annotationId){
+          const annDataUrl = await fetchAsDataURL(resolveFileUrl(a.annotationId));
+          if(annDataUrl){ try{ doc.addImage(annDataUrl, 'PNG', x, y, w, h); }catch(e){} }
+        }
+        y += h + 4;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(140, 130, 112);
+        doc.text((a.name || 'Foto') + (a.annotationId ? ' · markiert' : ''), marginX, y);
+        y += 7;
+      }catch(e){ /* skip image that failed to decode */ }
+    }
+
+    if(files.length){
+      ensureSpace(8);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(30, 25, 20);
+      doc.text('Angehängte Dateien:', marginX, y); y += 6;
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor(70, 63, 50);
+      files.forEach(a => {
+        ensureSpace(6);
+        doc.text('• ' + (a.name || 'Datei') + ' (' + extOf(a.name, a.contentType) + ')', marginX, y);
+        y += 6;
+      });
+    }
+
+    return doc.output('blob');
+  }
+
+  async function savePdfForProtocol(p, btn){
+    const prevHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'PDF wird erstellt …';
+    try{
+      const blob = await generateProtocolPdf(p);
+      const safeName = (p.name || 'Protokoll').replace(/[\\/:*?"<>|]+/g, '-').trim().slice(0, 80) || 'Protokoll';
+      saveBlobAsFile(blob, `${safeName}.pdf`);
+      toast('PDF heruntergeladen.');
+    }catch(e){
+      toast('PDF konnte nicht erstellt werden.');
+    }
+    btn.disabled = false;
+    btn.innerHTML = prevHtml;
+  }
+
+  /* ============ boot ============ */
+  async function boot(){
+    await initStore();
+    $('saveHint').textContent = 'Automatische Rechtschreibprüfung gibt es in dieser eigenständigen Version nicht — bitte Text vor dem Speichern kurz selbst prüfen.';
+    subscribeTopics(list => { topics = list; renderTabs(); renderCards(); });
+    subscribeProtocols(list => { protocols = list; renderTabs(); renderCards(); });
+  }
+  boot();
+
+})();
+</script>
