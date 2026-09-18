@@ -324,7 +324,7 @@
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     background:rgba(20,17,12,0.45); color:#fff; font-size:0.65rem; text-align:center; padding:4px;
   }
-  .photo-thumb.err{ border-color:var(--danger); }
+  .photo-thumb.err{ border-color:var(--danger); cursor:pointer; }
 
   .attach-list{ display:flex; flex-direction:column; gap:8px; margin:14px 0; }
   .attach-row{
@@ -687,6 +687,26 @@
   const renderMarks = (s) => esc(s ?? "")
     .replace(/\*{2,}(.+?)\*{2,}/gs, "<strong>$1</strong>")
     .replace(/={2,}(.+?)={2,}/gs, "<mark>$1</mark>");
+  // Baut aus dem Fließtext und den Foto-Anhängen eine geordnete Abfolge von
+  // Text-/Bild-Abschnitten, sodass jedes Foto genau dort erscheint, wo es beim
+  // Schreiben eingefügt wurde (statt immer gesammelt am Ende). Fotos ohne
+  // gespeicherte Position (ältere Protokolle) landen wie bisher am Schluss.
+  function buildOrderedSegments(text, images){
+    const t = text || '';
+    const withPos = images.filter(a => typeof a.pos === 'number').sort((a, b) => a.pos - b.pos);
+    const withoutPos = images.filter(a => typeof a.pos !== 'number');
+    const segments = [];
+    let last = 0;
+    withPos.forEach(a => {
+      const pos = Math.max(0, Math.min(t.length, Math.round(a.pos)));
+      segments.push({ type: 'text', text: t.slice(last, pos) });
+      segments.push({ type: 'image', att: a });
+      last = pos;
+    });
+    segments.push({ type: 'text', text: t.slice(last) });
+    withoutPos.forEach(a => segments.push({ type: 'image', att: a }));
+    return segments;
+  }
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
   const nowIso = () => new Date().toISOString();
   const fmtDate = (iso) => {
@@ -877,15 +897,38 @@
     }
   }
 
-  async function uploadFile(file){
+  // Wartet auf ein Promise, wirft aber spätestens nach `ms` Millisekunden einen
+  // Timeout-Fehler — verhindert, dass ein hängender Netzwerk-Request (z. B. wenn
+  // iOS Safari die Seite kurz in den Hintergrund schickt, während die Kamera offen
+  // ist) den Upload für immer bei "Lädt hoch …" stehen lässt.
+  function withTimeout(promise, ms, code){
+    return new Promise((resolve, reject) => {
+      const t = setTimeout(() => reject(Object.assign(new Error('timeout'), { code: code || 'timeout' })), ms);
+      Promise.resolve(promise).then(
+        v => { clearTimeout(t); resolve(v); },
+        e => { clearTimeout(t); reject(e); }
+      );
+    });
+  }
+
+  async function uploadFile(file, attempt){
+    attempt = attempt || 1;
     if(store.mode === 'real' && fbStorage){
       const path = 'uploads/' + uid() + '-' + (file.name || 'datei').replace(/[^a-zA-Z0-9._-]+/g, '_');
-      const ref = fbStorage.ref().child(path);
-      await ref.put(file);
-      const url = await ref.getDownloadURL();
-      // die Firebase-Storage-URL selbst dient als id — so lässt sie sich später
-      // überall (auch auf einem anderen Gerät) synchron aus dem Protokoll auflösen.
-      return { id: url, contentType: file.type || 'application/octet-stream' };
+      try{
+        const ref = fbStorage.ref().child(path);
+        await withTimeout(ref.put(file), 45000, 'timeout');
+        const url = await withTimeout(ref.getDownloadURL(), 20000, 'timeout');
+        // die Firebase-Storage-URL selbst dient als id — so lässt sie sich später
+        // überall (auch auf einem anderen Gerät) synchron aus dem Protokoll auflösen.
+        return { id: url, contentType: file.type || 'application/octet-stream' };
+      }catch(e){
+        if(attempt < 3){
+          await new Promise(r => setTimeout(r, 1000 * attempt));
+          return uploadFile(file, attempt + 1);
+        }
+        throw Object.assign(new Error('upload_failed'), { code: 'upload_failed' });
+      }
     }
     // Demo-Fallback ohne Cloud: lokale Objekt-URL, nur in diesem Tab gültig
     const id = uid();
@@ -1077,31 +1120,29 @@
         </div>
         <button class="btn btn-ghost" id="btnCloseDetail" aria-label="Schließen">✕</button>
       </div>
-      <div class="detail-text">${renderMarks(p.text||'')}</div>
-      ${p.signature && p.signature.id ? `<div class="sig-block" style="margin-top:14px;">
-        <div class="sig-existing">
-          <img src="${resolveFileUrl(p.signature.id)}" alt="Unterschrift">
-          <span class="sig-meta">Unterschrieben${p.signature.name ? ' von ' + esc(p.signature.name) : ''}${p.signature.signedAt ? ' am ' + fmtDate(p.signature.signedAt) : ''}</span>
-        </div>
-      </div>` : ``}
       ${(() => {
         const atts = p.attachments || [];
         const images = atts.filter(a => isImageType(a.contentType));
         const files = atts.filter(a => !isImageType(a.contentType));
-        let html = '';
-        if(images.length){
-          html += `<div class="detail-images">${images.map(a => {
+        const segments = buildOrderedSegments(p.text || '', images);
+        let html = `<div class="detail-text">`;
+        segments.forEach(seg => {
+          if(seg.type === 'text'){
+            if(seg.text) html += renderMarks(seg.text);
+          } else {
+            const a = seg.att;
             const url = resolveFileUrl(a.id);
             const annUrl = a.annotationId ? resolveFileUrl(a.annotationId) : '';
-            return `<figure class="detail-image-fig">
+            html += `<figure class="detail-image-fig" style="margin:14px 0;">
               <div class="img-stack" style="aspect-ratio:auto;">
                 <img class="detail-image base" src="${url}" data-full="${url}" data-ann-full="${annUrl}" alt="${esc(a.name || 'Foto zum Protokoll')}">
                 ${annUrl ? `<img class="ann" src="${annUrl}" alt="" style="position:absolute;inset:0;">` : ``}
               </div>
               ${a.name ? `<figcaption class="detail-image-cap">${esc(a.name)}${a.annotationId ? ' · markiert' : ''}</figcaption>` : ``}
             </figure>`;
-          }).join('')}</div>`;
-        }
+          }
+        });
+        html += `</div>`;
         if(files.length){
           html += `<div class="attach-list">${files.map(a => {
             const url = resolveFileUrl(a.id);
@@ -1110,6 +1151,12 @@
         }
         return html;
       })()}
+      ${p.signature && p.signature.id ? `<div class="sig-block" style="margin-top:14px;">
+        <div class="sig-existing">
+          <img src="${resolveFileUrl(p.signature.id)}" alt="Unterschrift">
+          <span class="sig-meta">Unterschrieben${p.signature.name ? ' von ' + esc(p.signature.name) : ''}${p.signature.signedAt ? ' am ' + fmtDate(p.signature.signedAt) : ''}</span>
+        </div>
+      </div>` : ``}
       <div class="detail-actions">
         <button class="btn" id="btnPrintProto" title="Protokoll als PDF-Datei speichern">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
@@ -1165,6 +1212,7 @@
       name: a.name || '', contentType: a.contentType || '', status: 'ready',
       annotationId: a.annotationId || null,
       annotationUrl: a.annotationId ? resolveFileUrl(a.annotationId) : null,
+      pos: typeof a.pos === 'number' ? a.pos : null,
     }));
     renderAttachmentGrid();
     loadSignatureIntoForm(p.signature || null);
@@ -1199,6 +1247,8 @@
     unsupported_type: 'Dateityp nicht unterstützt',
     quota_or_state: 'Speicher voll',
     rate_limited: 'Bitte kurz warten',
+    timeout: 'Upload hat zu lange gedauert',
+    upload_failed: 'Upload fehlgeschlagen',
   };
   function renderAttachmentGrid(){
     const grid = $('photoGrid');
@@ -1211,7 +1261,7 @@
           : `${fileIconSvg()}<span class="fname">${esc(item.name || 'Datei')}</span><span class="fext">${esc(extOf(item.name, item.contentType))}</span>`
         }
         ${item.status === 'uploading' ? `<div class="st">Lädt hoch …</div>` : ''}
-        ${item.status === 'error' ? `<div class="st">${esc(item.errMsg || 'Fehler')}</div>` : ''}
+        ${item.status === 'error' ? `<div class="st">${esc(item.errMsg || 'Fehler')} — antippen zum Wiederholen</div>` : ''}
         ${img && item.status === 'ready' ? `<button type="button" class="mark-btn" title="Markieren / fett beschriften / unterschreiben" aria-label="Foto markieren">🖍</button>` : ``}
         <button class="rm" aria-label="Anhang entfernen">✕</button>
       </div>`;
@@ -1225,14 +1275,49 @@
       const id = e.target.closest('.photo-thumb').dataset.id;
       openAnnotator(id);
     }));
+    grid.querySelectorAll('.photo-thumb.err').forEach(el => el.addEventListener('click', (e) => {
+      if(e.target.closest('.rm')) return;
+      retryUpload(el.dataset.id);
+    }));
+  }
+
+  async function retryUpload(localId){
+    const item = attachmentQueue.find(p => p.localId === localId);
+    if(!item || !item.file) return;
+    item.status = 'uploading';
+    item.errMsg = '';
+    renderAttachmentGrid();
+    try{
+      const { id, contentType } = await uploadFile(item.file);
+      item.assetId = id;
+      item.contentType = contentType || item.contentType;
+      if(!item.url) item.url = resolveFileUrl(id);
+      item.status = 'ready';
+    }catch(e){
+      item.status = 'error';
+      item.errMsg = UPLOAD_ERROR_COPY[e && e.code] || 'Fehler';
+    }
+    renderAttachmentGrid();
+  }
+
+  // Merkt sich, wo im Text der Cursor stand, als "Foto aufnehmen" / "Aus Galerie" /
+  // "Datei anhängen" angetippt wurde — so lässt sich das Foto später an genau dieser
+  // Stelle im Text anzeigen statt immer gesammelt ganz unten.
+  let pendingAnchorPos = null;
+  function currentTextPos(){
+    const ta = $('fText');
+    return typeof ta.selectionStart === 'number' ? ta.selectionStart : ta.value.length;
   }
 
   async function handleFiles(fileList){
     const files = Array.from(fileList || []);
-    for(const file of files){
+    const basePos = pendingAnchorPos != null ? pendingAnchorPos : $('fText').value.length;
+    for(let i = 0; i < files.length; i++){
+      const file = files[i];
       const localId = uid();
       const previewUrl = isImageType(file.type) ? URL.createObjectURL(file) : '';
-      attachmentQueue.push({ localId, assetId: null, url: previewUrl, name: file.name, contentType: file.type, status: 'uploading' });
+      const pos = basePos + i * 0.001;
+      attachmentQueue.push({ localId, assetId: null, url: previewUrl, name: file.name, contentType: file.type, status: 'uploading', file, pos });
       renderAttachmentGrid();
       try{
         const { id, contentType } = await uploadFile(file);
@@ -1250,9 +1335,9 @@
       renderAttachmentGrid();
     }
   }
-  $('btnCamera').addEventListener('click', () => $('inputCamera').click());
-  $('btnGallery').addEventListener('click', () => $('inputGallery').click());
-  $('btnFile').addEventListener('click', () => $('inputFile').click());
+  $('btnCamera').addEventListener('click', () => { pendingAnchorPos = currentTextPos(); $('inputCamera').click(); });
+  $('btnGallery').addEventListener('click', () => { pendingAnchorPos = currentTextPos(); $('inputGallery').click(); });
+  $('btnFile').addEventListener('click', () => { pendingAnchorPos = currentTextPos(); $('inputFile').click(); });
   $('inputCamera').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
   $('inputGallery').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
   $('inputFile').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
@@ -1641,6 +1726,7 @@
       .map(p => {
         const out = { id: p.assetId, name: p.name || '', contentType: p.contentType || '' };
         if(p.annotationId) out.annotationId = p.annotationId;
+        if(typeof p.pos === 'number') out.pos = p.pos;
         return out;
       });
     const stillUploading = attachmentQueue.some(p => p.status === 'uploading');
@@ -1769,16 +1855,46 @@
     doc.text(metaLine, marginX, y); y += 6;
     doc.setDrawColor(222, 214, 196); doc.line(marginX, y, pageW - marginX, y); y += 8;
 
+    const atts = p.attachments || [];
+    const images = atts.filter(a => isImageType(a.contentType));
+    const files = atts.filter(a => !isImageType(a.contentType));
+    const segments = buildOrderedSegments(p.text || '', images);
+
     doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(30, 25, 20);
-    const bodyText = stripMarks(p.text || '').split('\n');
-    bodyText.forEach(paragraph => {
-      const lines = paragraph.length ? doc.splitTextToSize(paragraph, usableW) : [''];
-      lines.forEach(line => {
-        ensureSpace(5.6);
-        doc.text(line, marginX, y);
-        y += 5.6;
-      });
-    });
+    for(const seg of segments){
+      if(seg.type === 'text'){
+        const bodyText = stripMarks(seg.text || '').split('\n');
+        bodyText.forEach(paragraph => {
+          const lines = paragraph.length ? doc.splitTextToSize(paragraph, usableW) : [''];
+          lines.forEach(line => {
+            ensureSpace(5.6);
+            doc.text(line, marginX, y);
+            y += 5.6;
+          });
+        });
+      } else {
+        const a = seg.att;
+        const baseDataUrl = await fetchAsDataURL(resolveFileUrl(a.id));
+        if(!baseDataUrl) continue;
+        try{
+          const props = doc.getImageProperties(baseDataUrl);
+          let w = usableW, h = w * (props.height / props.width);
+          if(h > usableH){ h = usableH; w = h * (props.width / props.height); }
+          ensureSpace(h + 10);
+          const x = marginX + (usableW - w) / 2;
+          doc.addImage(baseDataUrl, props.fileType || 'JPEG', x, y, w, h);
+          if(a.annotationId){
+            const annDataUrl = await fetchAsDataURL(resolveFileUrl(a.annotationId));
+            if(annDataUrl){ try{ doc.addImage(annDataUrl, 'PNG', x, y, w, h); }catch(e){} }
+          }
+          y += h + 4;
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(140, 130, 112);
+          doc.text((a.name || 'Foto') + (a.annotationId ? ' · markiert' : ''), marginX, y);
+          y += 7;
+          doc.setFont('helvetica', 'normal'); doc.setFontSize(11); doc.setTextColor(30, 25, 20);
+        }catch(e){ /* skip image that failed to decode */ }
+      }
+    }
     y += 4;
 
     if(p.signature && p.signature.id){
@@ -1795,31 +1911,6 @@
           y += h + 6;
         }catch(e){ /* skip unreadable signature image */ }
       }
-    }
-
-    const atts = p.attachments || [];
-    const images = atts.filter(a => isImageType(a.contentType));
-    const files = atts.filter(a => !isImageType(a.contentType));
-
-    for(const a of images){
-      const baseDataUrl = await fetchAsDataURL(resolveFileUrl(a.id));
-      if(!baseDataUrl) continue;
-      try{
-        const props = doc.getImageProperties(baseDataUrl);
-        let w = usableW, h = w * (props.height / props.width);
-        if(h > usableH){ h = usableH; w = h * (props.width / props.height); }
-        ensureSpace(h + 10);
-        const x = marginX + (usableW - w) / 2;
-        doc.addImage(baseDataUrl, props.fileType || 'JPEG', x, y, w, h);
-        if(a.annotationId){
-          const annDataUrl = await fetchAsDataURL(resolveFileUrl(a.annotationId));
-          if(annDataUrl){ try{ doc.addImage(annDataUrl, 'PNG', x, y, w, h); }catch(e){} }
-        }
-        y += h + 4;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(140, 130, 112);
-        doc.text((a.name || 'Foto') + (a.annotationId ? ' · markiert' : ''), marginX, y);
-        y += 7;
-      }catch(e){ /* skip image that failed to decode */ }
     }
 
     if(files.length){
